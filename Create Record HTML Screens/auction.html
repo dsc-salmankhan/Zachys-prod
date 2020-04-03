@@ -1,0 +1,159 @@
+<html>
+
+<head>
+  <title>Create Auction Lots</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <script type="text/javascript" src="https://4977400.app.netsuite.com/core/media/media.nl?id=134356&c=4977400&h=573aee041bb4d7af9c7e&_xt=.js"></script>
+  <script type="text/javascript" src="https://4977400.app.netsuite.com/core/media/media.nl?id=134354&c=4977400&h=a29e1dfd22922feb1e14&_xt=.js"></script>
+  <script type="text/javascript" src="https://4977400.app.netsuite.com/core/media/media.nl?id=134353&c=4977400&h=38023a10cbc695e0c9d1&_xt=.js"></script>
+  <script type="text/javascript" src="https://4977400.app.netsuite.com/core/media/media.nl?id=134355&c=4977400&h=99844c788138d2b9aa5d&_xt=.js"></script>
+  <script type="text/javascript" src="https://4977400.app.netsuite.com/core/media/media.nl?id=134350&c=4977400&h=b7520047576dbd671507&_xt=.js"></script>
+  <script type="text/javascript" src="https://4977400.app.netsuite.com/core/media/media.nl?id=134346&c=4977400&h=278a611f41f1069a8c99&_xt=.js"></script>
+  <script type="text/javascript" src="https://4977400.app.netsuite.com/core/media/media.nl?id=134349&c=4977400&h=4e5223386b68247876f6&_xt=.js"></script>
+  <link rel="stylesheet" href="https://4977400.app.netsuite.com/core/media/media.nl?id=134342&c=4977400&h=108316978a743cf82ab6&_xt=.css" />
+  <link rel="stylesheet" href="https://4977400.app.netsuite.com/core/media/media.nl?id=134341&c=4977400&h=634121af8a9e592f8155&_xt=.css" />
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+
+  <script type="text/javascript">
+    var WINES_CATALOG = [];
+    window.onload = function () {
+
+      var LPs = {{LPs}};
+      var auctionsDataArr = {{auctionsDataArr}};
+      window.LPs = LPs;
+      window.auctionsDataArr = auctionsDataArr;
+      window.suiteletUrl = window.location.protocol + '//' + window.location.hostname + '{{SUITELET_URL}}'
+
+      document.body.appendChild(new Zachys.Stock().holder);
+    }
+  </script>
+</head>
+<style>
+  .lds-spinner {
+    color: official;
+    display: inline-block;
+    position: relative;
+    width: 64px;
+    height: 64px;
+  }
+
+  .lds-spinner div {
+    transform-origin: 32px 32px;
+    animation: lds-spinner 1.2s linear infinite;
+  }
+
+  .lds-spinner div:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 3px;
+    left: 29px;
+    width: 5px;
+    height: 14px;
+    border-radius: 20%;
+    background: #fff;
+  }
+
+  .lds-spinner div:nth-child(1) {
+    transform: rotate(0deg);
+    animation-delay: -1.1s;
+  }
+
+  .lds-spinner div:nth-child(2) {
+    transform: rotate(30deg);
+    animation-delay: -1s;
+  }
+
+  .lds-spinner div:nth-child(3) {
+    transform: rotate(60deg);
+    animation-delay: -0.9s;
+  }
+
+  .lds-spinner div:nth-child(4) {
+    transform: rotate(90deg);
+    animation-delay: -0.8s;
+  }
+
+  .lds-spinner div:nth-child(5) {
+    transform: rotate(120deg);
+    animation-delay: -0.7s;
+  }
+
+  .lds-spinner div:nth-child(6) {
+    transform: rotate(150deg);
+    animation-delay: -0.6s;
+  }
+
+  .lds-spinner div:nth-child(7) {
+    transform: rotate(180deg);
+    animation-delay: -0.5s;
+  }
+
+  .lds-spinner div:nth-child(8) {
+    transform: rotate(210deg);
+    animation-delay: -0.4s;
+  }
+
+  .lds-spinner div:nth-child(9) {
+    transform: rotate(240deg);
+    animation-delay: -0.3s;
+  }
+
+  .lds-spinner div:nth-child(10) {
+    transform: rotate(270deg);
+    animation-delay: -0.2s;
+  }
+
+  .lds-spinner div:nth-child(11) {
+    transform: rotate(300deg);
+    animation-delay: -0.1s;
+  }
+
+  .lds-spinner div:nth-child(12) {
+    transform: rotate(330deg);
+    animation-delay: 0s;
+  }
+
+  @keyframes lds-spinner {
+    0% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .loader-inner {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background: black;
+    opacity: 0.3;
+  }
+</style>
+
+<body>
+  <div class="loader-custom">
+    <div id='loader-spin' style="position: absolute;z-index: 9999;left: 45%;top: 40%;">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <div id='loader-inn'>
+
+    </div>
+  </div>
+</body>
+
+</html>

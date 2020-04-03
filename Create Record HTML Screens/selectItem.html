@@ -1,0 +1,965 @@
+<html>
+  <head>
+    <title>Zachys</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script type="text/javascript" src="js/ozine.core.js"></script>
+    <script type="text/javascript" src="js/ozine.data.js"></script>
+    <script type="text/javascript" src="js/ozine.router.js"></script>
+    <script type="text/javascript" src="js/ozine.ui.js"></script>
+    <script type="text/javascript" src="js/WINES.js"></script>
+    <script type="text/javascript" src="js/zachys.select_item.js"></script>
+    <link rel="stylesheet" href="css/select-item.css" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+
+    <script type="text/javascript">
+
+      var WINES_CATALOG = [];
+      window.onload = function(){
+
+
+
+        var lines = escape(WINES_CSV).split('%0A');
+        lines.forEach(line => {
+          line = unescape(line).trim().replace(/"[\d,\.]*?"/gim, function(a){return a.replace(/[",]/gim, "")})
+          line = line.split(',');
+          var name = line[3].split(/\d\d\d\d/)[0];
+          var size = line[3].match(/\(.*?\)/)[0].replace(/[\(\)]/gim, '');
+          var year = line[3].match(/\d\d\d\d \(.*?\)/)[0].replace(/ \(.*?\)/gim, '');
+          var qty = Number(line[0]);
+          var lowPrice = Number(line[4].replace(/"/gim, "").replace(/,/gim, ""));
+          var highPrice = Number(line[5].replace(/"/gim, "").replace(/,/gim, ""));
+
+          var region = line[6];
+          var classWine = line[7];
+          var apellation = line[8];
+          var SKU = line[9];
+
+          WINES_CATALOG.push({
+            name: name,
+            size: size,
+            vintage: year,
+            lowPrice: lowPrice,
+            highPrice: highPrice,
+            region: region,
+            class: classWine,
+            apellation: apellation,
+            qty: qty,
+            SKU: SKU,
+            type: 'TYPE',
+            cage: Math.random() > 0.5,
+            photo: 'PHOTO',
+          })
+        });
+        console.log(WINES_CATALOG);
+
+        document.body.appendChild(new Zachys.SelectItem().holder);
+      }
+      //{"bno":true,"bnob":true,"vts":true,"ts":true,"l.bsl":true,"mark":true,"l.mark":true,"l.wsl":true,"scuff":true,"dsl":true,"h.nick":true,"h.scuff":true,"h.torn":true,"h.dsl":true,"l.wrinkled":true,"l.scuff":true,"bn":true,"2cmob":true,"2.5cm":true,"3cm":true,"h.wsl":true,"torn":true,"wsl":true,"4cm":true,"bsl":true,"1.5cm":true,"3.5cm":true,"l.nick":true,"sold":true,"5cm":true,"nicked":true,"l.dsl":true,"SOLD":true,"ExZachys":true,"4.5cm":true,"nick":true,"h.bsl":true,"l.faded":true,"1.5cmob":true,"ex-christies":true,"ex-sothebys":true,"2cm":true,"jbts":true,"l.torn":true,"BN":true,"l.glue":true,"in":true,"h.glue":true,"glue":true,"ex-zachys":true,"BNoB":true,"H.dsl":true,"wrinkled":true,"US":true,"us":true,"scuffed":true,"Cellar2":true,"l.nicked":true,"2cmOB":true,"Ldsl":true,"DSL":true,"1.5cmOB":true,"l.ton":true,"H.bsl":true,"Lox":true,"l.CC":true,"-ex-christies":true}
+    </script>
+  </head>
+  <body>
+    <textarea id="textarea" style="width:500px; height: 500px; display: none;">
+        2xbno
+        2xbno
+        2xbnob, 6xvts, 1xts, 3xl.bsl, 1xmark, 2 diff imp, 1ximp on
+
+        9xbnob, 2xvts, 1xts, 7xl.bsl, 1xl.mark
+
+        4xbnob, 1xl.wsl, 4xl.bsl, 1xscuff, 3xdsl, 1xl.oxi cap
+
+        5xbnob, 1xts, 1xh.nick, 2xscuff, 1xh.scuff, 1xh.torn, 2xdsl, 1xh.dsl, 2xl.wrinkled,
+
+        bn, prev cut cap, illegible branding,
+
+        10xbnob, 1xvts, 1xts, 4 diff imp, 1xl.scuff
+        1xbn
+
+        includes 12pk owc, 5x2cmob, 4x2.5cm, 1x3cm, 2xh.wsl, 1xtorn, 1xwsl, 1xl.wsl, 3xdsl, 1xscuff // box97:  1x3.5cm, 1x4cm, 2xbsl
+
+
+
+        3x1.5cm, 1x2.5cm, 1x3cm, 2x3.5cm, 3xl.mark, 1xl.nick, 3xl.bsl, 4ximp on, 2xsold
+
+        1x3.5cm, 2x5cm, 1x55cm 1xh.dsl, 1xnicked,  4xl.scuff, 1xl.dsl, 1xdsl, 1ximp on, 1xl.torn cap, 2xSOLD, 1xExZachys
+
+        6pk owc, 1x3cm, 3x3.5cm, 2x4.5cm, 6xdsl, 1xl.wsl, 2xl.scuff, ex-sothebys
+
+        6pk owc, 2x3.5cm, 2x4cm, 2x4.5cm, 6xl.bsl, 1xscuff, 2xl.scuff, 1xnick, 2xsold
+
+        2xbn, 1xvts, 1xh.bsl, 1xl.wsl, 1xhandwriting on label, 1xbsl, 1xl.scuff, 1xl.faded, 1xl.prot cork, 1xex-sothebys aulden
+        1xbn, 1xbsl
+
+        3pk owc, 3xbnob, 2xl.bsl,
+
+        3pk owc, 3xbnob, 1xscuff, 2xl.scuff, 3xdsl, ex-sothebys london
+
+        6x1.5cmob, 4xl.scuff, 2xl.mark, 6xex-sothebys aulden, 2ximp adh to label, 2 diff imp
+
+        12pk owc, 12x2cmob, 12ximp on, ex-zachys christies
+
+        12pk owc, 12x1.5cmob, ex-sothebys125251
+
+        12pk owc damaged lid, 12x1.5cmob, 12xex-christies, 12x The Wine Trust stickers adh to bottles
+
+        12pk owc, 12x1.5cmob, 3xl.scuff, 12xex-sothebys
+
+        12x1.5cmob, 3xl.scuff, 1xl.mark
+
+        4x2cm, 1x2.5cm, 5xbsl, 1xscuff, 1xnick,
+
+        in, imp on, l.scuff, l.faded
+
+        6xbnob, 2xvts, 3xts, 1xjbts, 1xl.scuff, 1xl.mark, 2xl.oxi cap,
+
+        bn, 1xpartially missing label
+
+        7xbnob, 2xvts, 1xts, 2xl.torn, 1xl.scuff
+
+        1xBN, 1xh.dsl, 1xtissue adhered to label
+
+        4xbn, 2xvts, 4xdsl, 1xh.dsl, 2xbsl, 1xl.tissue stain, 1xnick, 1xl.torn
+
+        2xbn, 2xvts, 2xts, 3xl.tissue stain, 4xdsl, 2xh.dsl, 4xnick, 1xl.torn,
+
+        2xbn, 3xvts, 1xts, 5xdsl, 1xl.nick, 4xtissue adh to label
+
+        5xvts, 1xts, 3xdsl, 2xh.dsl, 3xl.tissue stain
+
+        5xbnob, 2xts, 1xjbts, 1xglue stain, 2xl.scuff,
+
+        8xbnob, 2xvts, 2xts, 5xbsl, 1xdsl, 1xl.scuff, 2 diff imp (doral, chateau & estate), 8ximp on, 2xtissue adh to cap,
+
+        6pk owc, 2xbnob, 3xvts, 1xts, 1xnick, 1xl.bsl, 3xl.dep cork, 6ximp on
+
+        6pk owc, 4xbnob, 2xvts, 1xl.bsl, 6ximp oon, 1xl.dep cork
+
+        3xind owc, 3xbnob, 3xex-christies
+
+        bn, h.wsl,
+
+        8xbnob, 1xvts, 3xl.scuff, 1xscuff, 2xl.bsl,
+
+        5xbnob, 1xvts, 1xl.scuff, 1xscuff, 1xl.dsl, 1xdsl, 1xh.dsl, 6ximp on
+
+        7xbn, 4xvts, 1xts, 1xl.faded, 5xscuff, 1xnick, 1xl.dsl, 1xdsl, 2 diff imp
+
+        3xbnob, 3xglue stain, 1xl.dsl, 1xl.bsl, 2xl.oxi cap, 1xl.torn
+
+        2xbn, 2xvts, 1xts, 1xjbts, 6xglue stain, 1xl.torn, 1xl.bsl, 1xscuff, 1xsold
+
+        2xind owc, 2xbn, 1xl.glue, 2xex-christies
+
+        3xind owc, 3xbnob, 3xex-christies, 1xl.wrinkled
+
+        vts, l.scuff, dsl, 4.5L
+
+        5xbnob, 6xvts, 3xh.blue damp stain, 3xl.bsl, 1xbsl, 1xnick, 2 diff imp
+
+        2xbnob, 7xvts, 3xts, 2xl.scuff, 1xl.nick, 2xl.bsl, 1xl.oxi cap
+        3xbnob, 7xvts, 2xts, 1xscuff, 2xbsl, 2 diff imp,
+
+        6pk owc, 5xbnob, 1xvts, 1xnick, 6xex-christies
+
+        1xbn, 1xvts, 2xl.bsl, 1xl.prot cork, 2xex-christies ny
+
+        3pk owc, 1xvts, 2xts, 1xl.oxi cap
+
+        jbts, prev cut cap, illegible branding (ex-acker)
+
+        5xbnob, 5ximp on, 1xnick, 1xl.scuff, 1xmark
+
+        11xbnob, 1xvts, 1xl.nick, 12ximp on, 1xl.bsl
+
+        box 54: 1xbn, 1x imp on (chateau & estate), 1xsold, 1xex-HDH Steven Verlin // box 131:1xbn, 1xex-zachys stormby
+
+        6pk owc, 6xbnob, 1xnick, 2xl.bsl
+
+        6pk owc, 6xbnob,
+
+        6pk owc, 6xbnob,
+
+        6xbnob, 1xl.nick, 1xl.scuff, 2xex-zachys Nils Stormby
+
+        6xbnob, 2xl.scuff, 1xl.nick, 2 diff imp, 5xHDH Steven Verlin,
+
+        2xbn, 1xnick,
+
+        vts, l.bsl,
+
+        7xbnob, 1xwsl, 1xscuff, 1xl.bsl, 1xl.scuff, 3xex-sothebys
+
+        12xbnob, 2xwsl, 1xl.bsl, 3ximp on,
+
+        12xbnob, 1xl.wsl, 2xwsl, 1xl.scuff, 8xex-sothebys aulden, 7x imp on
+
+        12xbnob, 7ximp on, 2 diff imp, 1xsold, 1xwsl, 1xscuff, 1xl.scuff, 1xl.bsl
+
+        5xbnob, 1xvts, 5ximp on (all same imp for 6), 1xnick, 1xdsl, 1xl.dsl
+
+        1xin, 1xl.scuff  // 1xin, 1xl.glue stain // 1xin
+
+        2xvts, 2ximp on (2xchateau & esteate), 1xl.scuff,
+
+        12xbnob, 12ximp on, 2xl.scuff
+
+        9xbn, 3xvts, 8xglue stain, 2xh.glue, 3xl.scuff, 12ximp on,  (C&B Vintage CelLars, San Francisco)
+
+        2xbn, 9xvts, 1xts, 6xglue stain, 4xh.glue, 2xscuff, 3xl.scuff, 12ximp on (C&B)
+
+        2xvts, 8xts, 2xjbts, 8xglue, 2xh.glue, 3xl.scuff, 3xscuff, 12ximp on (C&B)
+
+        bn, glue stain, nick, prev cut cap reveals fully branded cork, ex-zachys
+
+        2xvts, 1xts, 3xglue stain, 1xdsl, 1xh.dsl, 1xl.wsl, 1xsold, 3xex-zachys
+
+        7xbn, 5xvts, 1xnick, 1xl.torn, 2xh.dsl, 1xdsl, 1xl.scuff, 2xtorn cap
+
+        3xbnob, 1xdetached & h.deteriorated obscuring vintage, 1xh.torn, 3xh.dsl, 1xloose cap reveals fully branded cork confirming vintage
+
+        6pk damaged owc, 3xbnob, 3xvts, 6xh.dsl, 2xdetached labels, 1xl.nick, 1xsold
+
+        6xBNoB, 6x deteriarated label, 6x h.dsl
+
+        1xvts, 3xts, 4xjbts, 3xl.mark, 5xbsl, 1xl.oxi cap,
+
+        3xbnob, 1x vts 1xtorn, 3xh.dsl, 1xoxi cap, 1xsold, 1x nicked label
+
+        6pk owc, 4xbnob, 2xvts, ex-sothebys
+
+        6pk owc, 5xbn, 1xvts, , 1xl.bsl, ex-sothebys
+
+        6pk owc, 4xbn, 2xvts, 3xl.bsl, 1xl.dsl, 1xsold
+
+        5x bnob , 1x vts, 6x H.dsl, 1x torn, 2x ox caps, 2x diff imp, 1x sold
+
+        in, l.bsl, l.tissue stain, ex-zachys
+
+        10xbnob, 3xvts, 7xglue stain, 6xh.glue stain, 1xh.nick,
+
+        12xin, 5xl.glue, 5xglue, 2xh.glue stain, 1xnick, 2xdsl, 12ximp on
+        5xbnob, 3xglue, 1xh.glue, 1xl.torn, 1xscuff, 1xwrinkled, 3 diff imp
+
+        10xbnob, 1xvts, 1xts, 5xl.glue, 4xglue, 3xh.glue, 3xdsl, 3 diff imp
+
+        2xbnob, 2 diff imp, 1xl.scuff
+        12xbnob, 3xl.scuff, 2 diff imp,
+
+        4xbnob, 1xl.torn, 1xnick, 1xwsl, 1xl.wsl, 1xl.dsl
+
+        ind owc, vts, l.bsl, l.faded,
+
+
+        1xbn, 1xvts, 1xjbts
+        6xin, 2xscuff, 4xdsl, 2xh.dsl, 2xnick
+        6xbnob, 2 diff imp, 1xl.dsl, 3xdsl, 2xh.dsl, 1xnick
+        jbts, bsl, scuffed label, l.ox cap
+        2x jbts, 2x US, 1x l. torn, 4x bsl, 1x l. cc, 1x purtruding cork
+        1x ts, 1x jbts, 2x scuffed label,2 x bsl 1x ox cap
+        jbts, h.bsl
+        1x jbts, 1x us, 1x scuffed, 1 x bsl, 2x dsl, 2x L. purtruding corks, 2x foriegn importer
+        bn, ex golden cellar
+        us, Hdsl, scuffed label, , imp. ad to label
+
+
+
+
+
+
+        "RTO pending GT (internal: illegible cork branding, glows!, no metallic sheen, bdx wine locators, nicolas filter sticker on back), Rejected by GT
+
+        ms, scuff, "
+        1xRTO pending GT (internal: luminescent paper, crude printing, bdx wine locators)
+        3xRTO pending GT (internal: crude printing, inconsistent paper, no glue stain, bdx wine locators)
+        2xRTO pending GT (internal: crude printing, inconsistent paper, no glue stain, bdx wine locators)
+        1xRTO inconsistent label (internal: wrong label, nicolas stamp on label, modern cap) rejected by GT
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        8x2cmob, 1xl.torn 5xl.bsl, 3ximp on (vineyard brands), 5xCellar2
+
+        1x4cm, 1x5cm, 2xh.chip wax cap fully reveals cork, 2xl.torn, 1xbsl, 1xl.bsl, 1xex-christies, 1ximp on
+
+        8x2cmob, 6ximp on, 2 diff imp, 4xl.bsl
+
+        12x2cmob, 4xl.bsl, 1xscuff, 1xl.wsl, 3 diff imp, 7xex-sothebys aulden, 4ximp on
+
+        12x2cmob, 2xdsl, 1xh.scuff, 1xmark, 3 diff imp, 1xmissing cap + 1xloose cap reveals producer & vintage branded cork thus confirming vintage, 4xl.prot cork, 2ximp on
+
+
+
+        5x2cmob, 1x2.5cm, 1xnick,
+
+        *1989* 5x 3.5cm , 1x 4.5cm 6x dsl, 2x scuffed labels, 4x L. ox caps, 4x ex cellar 2, 2 x ex zachys chrities
+
+        5x2.5cm, 1xl.nicked, 1xl.bsl, 5ximp on
+
+
+
+
+
+        1x4.5cm, 1x5cm, 2xwsl, 2ximp on
+
+        8x2cmob, 1x2.5cm, 1xscuff, 1xl.torn, 1xl.scuff, 1xsold, 4xbelieved to be Bonneau signed label, 9xex-zachys
+
+        12x2cmob, 2xnick, 6xl.mark, 2xbelieved to be Bonneau signed label
+
+        1xl.bsl
+
+
+
+        1xnick, 1xmark, 1xl.bsl, //
+
+        2xsold, 2xwine stained vintage tag, 1xmissing vintage tag + loose cap reveals producer & vintage cork thus confirming vintage, 1x cut cap reveals producer & vintage branded cork, 2 diff capsules
+
+        4xtissued adh to label, 1xmissing vintaget tag, 1xloose cap reveals vintage & producer branded cork thus confirming vintage
+
+        5x2cmob, 2x2.5cm, 1x3cm, 1x3.5cm, 2xnick, 2xscuff, 2xl.scuff, 2xl.bsl, 2 diff imp, 2 diff labels, 1xtorn cap partially reveals cork, 9ex-zachys, 4xprot cork
+
+        10x2cmOB, 1x2.5cm, 1x3cm, 5xdsl, 4xscuff, 2xdif imp
+
+
+
+        11x2cmOB, 3xnicked, 8xl.dsl, 4xscuff, 2xdif imp
+
+        9x 2cm ob , 3x 2.5cm, 3x lscuffed labe, 4x scuffed , 1x wsl, 2x sold 11x ex zachys
+
+        8x 2cm ob 3x 2.5cm , 1x 3cm, 1x l.torn, 4x scuffed labels, 2 x nicked , 1x wsl,1x ox cap, 1x sold, 2diff imp, 11x ex zachys
+
+        10x 2cm ob, 2x 2.5cm, 5x scuffed ;abel, 4x bsl, 1x wine stained vintage tag, 1x ix cap , 1x sold , 11x ex zachys
+
+        2x1.5cm, 1xdsl, 2xl.scuff, 1xnick (2x Wine Cellars Ltd imp) // 10x1cmob, 1xnick, 2xscuff,  10xex-zachys
+
+        10x 2cm ob, 3x Ldsl, 4x L. scuffed labels, 5x L.ox caps, 3x sold, 10x ex zachys
+
+        12x2cmOB, 4xDSL, 2xscuff, 3xSOLD, 2xdif imp, 1x imp adhered 12xEx Zachys
+
+        11x1.5cmOB, 5xl.dsl
+
+        "11x2cmob, 2 diff imp, 11xex-zachys, 2xl.scuff
+
+        1xRTO missing vintage tag, cut cap reveals producer branded cork only (box 22791/64)"
+
+        3 diff imp, 3xex-zachys, 1xl.scuff, 1xbsl,
+
+        4 diff imp, 6xl.nick, 2xl.scuff, 1xl.bsl, 1xwine stained vintage tag, 3xsold, 12xex-zachys,
+
+        2xscuff, 1xtorn, 1xbsl, 5xws V tag, 6x SOLD, 10xExZachys
+
+        1xsold, 1xwine stained vintage tag, 1xex-christies zachys // 1xnick, 1xl.nick, 3xl.scuff, 3xsold, 3xwine stained vintage tag //
+
+        4x2cmob, 4ximp on, 2xl.bsl, 1xbsl, 1xh.bsl, 1ximp tag adh to neck tag, (Wine Society imp) 2xdep cork
+
+        8x2cmob, 3x2.5cm, 1x3cm, 6xbsl, 1xh.bsl, 1xpartially missing label, 2xtorn, 2xnick, 1xh.torn, 2xscuff, 2ximp tag adh to neck tag, 2 diff imp, 12ximp on
+
+        9x2cmob, 3x2.5cm, 12ximp on, 12ximp tag adh to neck tag, 2xl.bsl, 7xbsl, 3xh.bsl, 1xl.torn, 2xscuff,
+
+        12x2cmob, 12ximp on, 2xtorn, 1xl.torn, 1xh.torn, 1xl.dsl, 7xdsl, 4xh.dsl,
+
+        1x2.5cm, 1x3cm, 1x3.5cm, 3xh.dsl, 3xh.bsl, 1x torn, 1xl.ton, 1xOx Cap
+
+        6x 3cm, 4x bsl, 2x H.bsl, 3x nicked label,
+
+        4x2cmob, 1x2.5cm, 1x4.5cm, 4xdsl, 3xh.bsl, 1xtorn, 1xnick,
+
+        box 43: 5cm, h.dsl, sold, ex-The Cellar // box 61:1x 6.5cm, 1xh.dsl, 1xtorn,1xh.chip wax cap part reveals cork
+
+        "RTO blemish @ punt, shallow cracked glass (box 22791/44)
+        (internal: pixelated label, The Cellar)
+
+        8cm, h.torn, dsl, missing neck tag, chip wax cap, sold"
+
+        8x 2cm ob, 1x H torn, 1x torn, 8x dsl, 4x L. ox caps, 4x sold, 4x ex zachys,
+
+        6x2cmob, 6x2.5cm, 6xmissing neck tags, 2xh.torn, 1x torn, 3xh.bsl, 3xbsl, 9ximp on, 4xl.dep cork, 4xl.oxi cap, 3xsold, 4x dsl, 4x impoter on, 3x ex zachys
+
+        8x 2cm ob, 4x 2.5cm, 1x part det. Label, 2 x h torn labels, 2x torn, 12 x dsl, 3x Lox, 1 x cc part. Exposing cork, 3x sold, 3x ex zachys
+
+        9x2cmOB, 3x2.5cm, 11xbsl, 1ximp on, 1xbsl, 4xdsl, 4xscuff, 1xtorn, 4xSOLD
+
+        10x2cmOB, 1x2.5cm, 1x3cm, 1xtorn, 10xdsl, 2xbsl, 1xtorn, 1ximp on,
+
+        2x2cmOB, 2x3cm, 1xscuff, 1xtorn, 4ximp on, 2xl.dep cork, 1xl.CC, 2xSOLD, 4xEx Zachys Christies
+
+        6x2cmob, 1xl.bsl, 1xscuff, 6ximp on, 1xsold, 2xl.dep cork
+
+        box 52: 1x2.5cm, 1xl.scuff, 1xl.torn cap // box 62: 3.5cm, l.scuff, sold
+
+        6x2cm, 3x3cm, 6ximp on (Ideal wine), 2 diff imp, 5x-ex-christies, 2xsold, 2xwine stained vintage tag, 2xl.scuff, 1xl.corr cap
+
+        8x2cmob, 3x2.5cm, 1x3cm, 9xex-christies, 1xsold, 1xwine stained vintage tag, 3xl.wrinkled, 1xnick, 1xcorr cap, 2 diff imp, 9ximp on (ideal wine)
+
+        "box 55: 2x2cmob, 1x2.5cm, 3xbsl, 3xex-christies
+
+        box 65: 2x2.5cm, 1x3cm, 1ximp tag adh to cap, 2xh.torn, 1xbsl, 1xl.bsl, "
+
+        10x2cmob, 2x2.5cm, 3xl.wsl, 1xl.torn, 1xl.scuff, 2 diff imp, 1xex-christies , 1xex-sothebys aulden, 7ximp on, 1xsold
+
+        6x2cmob, 1x2.5cm, 2x3cm, 2x3.5cm, 1x4cm, 4xh.torn, 1xdsl, 3xl.dsl, 2 diff iimp, 1ximp on, 2xsold, 1xloose cap (generic cork)
+
+        3x2.5cm, 2x3cm, 1x3.5cm, 2xnick, 1xl.nick, 1xmark, 1xex-sothebys aulden, 2 diff imp, 6ximp on
+
+        into foil, l.scuff, bottle #0577 of 2000, l.oxi foil cap, sold, released in 2000
+
+        2x missing vintage tags, unknown vintage (cork not vintage branded)
+
+
+
+        bn
+        1.5cm
+        bn
+        bn
+        in, dsl, imp on, loose label
+        in
+        vts
+        bn
+        in, imp on
+        in, imp on
+        1xBN
+        in
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        0.5cm
+        1.5cm, imp on
+        1cm, bsl
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        1x4.5cm, 4x4cm,
+
+        1x2.5cm, 1xh.torn,
+
+    </textarea>
+
+  </body>
+</html>

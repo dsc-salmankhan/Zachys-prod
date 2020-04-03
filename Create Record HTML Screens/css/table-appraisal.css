@@ -1,0 +1,599 @@
+
+.table-header-filter .search{
+  height: 32px;
+  position: relative;
+  /* background-color:#f5f5f5; */
+  padding: 5px 0;
+  padding-left: 25px;
+  padding-right: 30px;
+}
+.table-header-filter .search i{
+  width: 30px;
+  right: 0;
+  left: auto;
+  position:absolute;
+  top: 5px;
+  border: 1px solid #ccc;
+  border-left: 0;
+  border-radius: 0 3px 3px 0;
+  height: 32px;
+  box-sizing: border-box;
+  background-color: #f8f8f8;
+}
+.table-header-filter .search i svg{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 14px;
+}
+.table-header-filter .search b{
+    display: block;
+    content: '';
+    width: 16px;
+    height: 16px;
+    box-sizing: border-box;
+    top: 50%;
+    left: 8px;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    border: 1px solid #ccc;
+}
+.table-header-filter .search input{
+  line-height: 30px;
+  padding: 0 5px;
+  margin: 0;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 3px 0 0 3px;
+}
+.table-header-filter .search input:focus{
+  border: 1px solid #aaa;
+  outline: 0;
+}
+.table-header-filter .search b.selected:after{
+    display: block;
+    content: '';
+    border: 3px solid #69b172;
+    border-top: 0;
+    border-left: 0;
+    width: 4px;
+    height: 9px;
+    position: absolute;
+    top: 0px;
+    left: 4px;
+    transform: rotate(45deg);
+    cursor: pointer;
+}
+.table-header-filter div{
+  max-height: 168px;
+  overflow: auto;
+}
+.table-header-filter div div{
+  white-space: nowrap;
+  padding-left: 22px;
+  position: relative;
+  text-transform: none;
+  padding-right: 10px;
+  cursor: pointer;
+}
+.table-header-filter div div:before{
+  display: block;
+  content: '';
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  top: 50%;
+  left: 8px;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  border: 1px solid #ccc;
+}
+.table-header-filter div div.selected:after{
+  display: block;
+  content: '';
+  border: 3px solid #69b172;
+  border-top: 0;
+  border-left: 0;
+  width: 4px;
+  height: 9px;
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  transform: rotate(45deg);
+  cursor: pointer;
+}
+
+.table-header-filter{
+  position: absolute;
+  top: 30px;
+  right: 0;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 0 0 5px 5px;
+  color:  #333;
+  z-index: 1;
+  line-height: 24px;
+  font-size: 12px;
+  font-weight: normal;
+  padding: 5px 10px;
+  min-width: 180px;
+}
+.select-item .headers > span.item-country .popup{
+  right: 10px;
+}
+
+
+
+.table-container{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.scrollTable{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  /* height: 100%; */
+}
+.scrollTable .header{
+  background-color: #222;
+  color: #fff;
+  line-height: 30px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  position: relative;
+  overflow-x:hidden;
+  /* display: flex; */
+  /* flex-direction: row; */
+}
+
+.scrollTable .paging {
+  background-color: #f5f5f5;
+  color: #333;
+  line-height: 30px;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  position: relative;
+  overflow-x: hidden;
+  padding: 10px;
+  /* display: flex; */
+  /* flex-direction: row; */
+}
+.scrollTable .paging b{
+  display: inline-block;
+  min-width: 30px;
+  line-height: 28px;
+  min-height: 30px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+  margin: 0 5px;
+  vertical-align: middle;
+}
+.scrollTable .paging span{
+  display:inline-block;
+  height: 30px;
+  vertical-align: middle;
+  box-sizing: border-box;
+
+}
+.scrollTable .paging b.selected{
+  background-color: #333;
+  border: 1px solid #333;
+  color: #fff;
+}
+.scrollTable .paging b svg{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 18px;
+  color: #333;
+  transform: translate(-50%, -50%);
+}
+.scrollTable .paging b.next svg,
+.scrollTable .paging b.last svg{
+  transform: translate(-50%, -50%) scaleX(-1);
+}
+.scrollTable .paging b.disabled{
+  border: 1px solid #ddd;
+  pointer-events: none;
+}
+.scrollTable .paging b.disabled svg{
+  color: #aaa;
+
+}
+.scrollTable .header-fix{
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #222;
+  z-index: 1;
+}
+.scrollTable .header-container{
+    width: 100%;
+    overflow-x: hidden;
+    white-space: nowrap;
+}
+.scrollTable .header-fix > div span.filter,
+.scrollTable .header-scroll > div span.filter{
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.scrollTable .header-fix > div,
+.scrollTable .header-scroll > div{
+  display: inline-block;
+  padding-left: 10px;
+  box-sizing: border-box;
+}
+
+.scrollTable .header-scroll > div > i{
+  display: inline-block;
+  width: 10px;
+  position: relative;
+  margin-left: 2px;
+  opacity: 0;
+  transition: opacity 300ms;
+  cursor: pointer;
+}
+.scrollTable .header-scroll > div.sort-desc > i,
+.scrollTable .header-scroll > div.sort-asc > i,
+.scrollTable .header-scroll > div:hover > i{
+  opacity: 1;
+}
+.scrollTable .header-scroll > div > i svg{
+  display: none;
+}
+.scrollTable .header-scroll > div > i svg{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -7px);
+}
+.scrollTable .header-scroll > div.sort-desc > i svg{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -7px)  rotate(180deg);
+  display: block;
+}
+.scrollTable .header-scroll > div:hover > i svg,
+.scrollTable .header-scroll > div.sort-asc > i svg{
+  display: block;
+}
+
+
+.scrollTable .content{
+  flex: 1;
+}
+
+.scrollTable .content .row,
+.scrollTable .content-fix .row{
+  font-size: 12px;
+  white-space: nowrap;
+  min-width: 100%;
+}
+.scrollTable .content .row:nth-child(2n),
+.scrollTable .content-fix .row:nth-child(2n){
+  background-color: #f5f5f5;
+}
+.scrollTable .content .row.hover,
+.scrollTable .content-fix .row.hover{
+  background-color: #ccc;
+}
+.scrollTable .content .row.selected,
+.scrollTable .content-fix .row.selected{
+  background-color: #d9f2ed;
+}
+.scrollTable .content .row.selected:nth-child(2n),
+.scrollTable .content-fix .row.selected:nth-child(2n){
+  background-color: hsla(168, 49%, 95%, 1);
+}
+
+
+.scrollTable .content{
+
+  position: relative;
+  overflow-x:auto;
+  /* display: flex; */
+  /* flex-direction: row; */
+}
+.scrollTable .content-fix{
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 7px;
+    width: auto;
+    background-color: #fff;
+    border-radius: 0;
+    z-index: 1;
+    transition: box-shadow 300ms;
+    overflow-y: auto;
+}
+.scrollTable .content-fix::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 0px;
+    height: 0px;
+}
+.scrollTable .content-container{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    /* flex: 1; */
+    overflow: scroll;
+}
+.scrollTable .header-fix.shadow,
+.scrollTable .content-fix.shadow {
+  box-shadow: 3px 0 10px rgba(0, 0, 0, 0.3);
+}
+.scrollTable .content-fix > div > div,
+.scrollTable .content-scroll > div > div{
+  display: inline-block;
+  padding-left: 10px;
+  box-sizing: border-box;
+  line-height: 20px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  min-height: 36px;
+  vertical-align: middle;
+}
+
+.scrollTable .content-fix > div > div.button-cell{
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.scrollTable .content-scroll > div > div.input,
+.scrollTable .content-fix > div > div.input{
+  position: relative;
+}
+.scrollTable .content-fix > div > div.input:after,
+.scrollTable .content-scroll > div > div.input:after{
+  content: '.';
+  display: inline-block;
+  color: transparent;
+}
+.scrollTable .content-fix > div > div.input input,
+.scrollTable .content-scroll > div > div.input input{
+  position: absolute;
+  line-height: 26px;
+  border: 1px solid transparent;
+  background-color: transparent;
+  left: 5px;
+  top: 3px;
+  right: 0;
+  width: calc(100% - 10px);
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+  padding-left:  5px;
+  font-size: 14px;
+}
+.scrollTable .content-fix > div > div.input input:focus,
+.scrollTable .content-scroll > div > div.input input:focus{
+  background-color: #fff;
+  outline: 0;
+  border: 1px solid #9e9e9e;
+}
+.scrollTable .content-fix > div > div.dropdown,
+.scrollTable .content-scroll > div > div.dropdown{
+  position: relative;
+}
+.scrollTable .content-fix > div > div.dropdown select,
+.scrollTable .content-scroll > div > div.dropdown select{
+  position: absolute;
+  line-height: 26px;
+  border: 1px solid transparent;
+  background-color: transparent;
+  left: 5px;
+  top: 3px;
+  right: 0;
+  width: calc(100% - 10px);
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+  padding-left: 5px;
+  height: 28px;
+  font-size: 12px;
+}
+.scrollTable .text-ellipsis{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.scrollTable .button{
+  padding: 0;
+  width: 100%;
+  font-size: 12px;
+  text-align: center;
+}
+
+/*.scrollTable .content-fix > div > div.text,
+.scrollTable .content-scroll > div > div.text{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}*/
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0,0,0,.5);
+  -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+.scrollTable b.button
+
+.table-header-filter .search{
+  height: 32px;
+  position: relative;
+  /* background-color:#f5f5f5; */
+  padding: 5px 0;
+  padding-left: 25px;
+  padding-right: 30px;
+}
+.table-header-filter .search i{
+  width: 30px;
+  right: 0;
+  left: auto;
+  position:absolute;
+  top: 5px;
+  border: 1px solid #ccc;
+  border-left: 0;
+  border-radius: 0 3px 3px 0;
+  height: 32px;
+  box-sizing: border-box;
+  background-color: #f8f8f8;
+}
+.table-header-filter .search i svg{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 14px;
+}
+.table-header-filter .search b{
+    display: block;
+    content: '';
+    width: 16px;
+    height: 16px;
+    box-sizing: border-box;
+    top: 50%;
+    left: 8px;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    border: 1px solid #ccc;
+}
+.table-header-filter .search input{
+  line-height: 30px;
+  padding: 0 5px;
+  margin: 0;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 3px 0 0 3px;
+}
+.table-header-filter .search input:focus{
+  border: 1px solid #aaa;
+  outline: 0;
+}
+.table-header-filter .search b.selected:after{
+    display: block;
+    content: '';
+    border: 3px solid #69b172;
+    border-top: 0;
+    border-left: 0;
+    width: 4px;
+    height: 9px;
+    position: absolute;
+    top: 0px;
+    left: 4px;
+    transform: rotate(45deg);
+    cursor: pointer;
+}
+.table-header-filter div{
+  max-height: 168px;
+  overflow: auto;
+}
+.table-header-filter div div{
+  white-space: nowrap;
+  padding-left: 22px;
+  position: relative;
+  text-transform: none;
+  padding-right: 10px;
+  cursor: pointer;
+}
+.table-header-filter div div:before{
+  display: block;
+  content: '';
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  top: 50%;
+  left: 8px;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  border: 1px solid #ccc;
+}
+.table-header-filter div div.selected:after{
+  display: block;
+  content: '';
+  border: 3px solid #69b172;
+  border-top: 0;
+  border-left: 0;
+  width: 4px;
+  height: 9px;
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  transform: rotate(45deg);
+  cursor: pointer;
+}
+
+
+.popup-container{
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% - 20px);
+  height: calc(100% - 20px);
+  position: fixed;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+}
+.popup-container .title{
+  line-height: 36px;
+  font-size: 15px;
+  color: #fff;
+  background-color: #222;
+  position: relative;
+  border-radius: 5px 5px 0 0;
+  padding-left: 13px;
+}
+.popup-container .title b{
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  display: inline-block;
+  cursor: pointer;
+}
+.popup-container .title b svg{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 20px;
+}
+.popup-container .container{
+  flex: 1;
+  position: relative;
+}
+.popup-container .container .scrollTable{
+  position:absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.add-disable {
+  pointer-events: none;
+}

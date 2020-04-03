@@ -1,0 +1,309 @@
+<html>
+
+<head>
+    <title>Create License Plate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script type="text/javascript"
+        src="https://4977400.app.netsuite.com/core/media/media.nl?id=134356&c=4977400&h=573aee041bb4d7af9c7e&_xt=.js">
+    </script>
+    <script type="text/javascript"
+        src="https://4977400.app.netsuite.com/core/media/media.nl?id=134354&c=4977400&h=a29e1dfd22922feb1e14&_xt=.js">
+    </script>
+    <script type="text/javascript"
+        src="https://4977400.app.netsuite.com/core/media/media.nl?id=134353&c=4977400&h=38023a10cbc695e0c9d1&_xt=.js">
+    </script>
+    <script type="text/javascript"
+        src="https://4977400.app.netsuite.com/core/media/media.nl?id=134355&c=4977400&h=99844c788138d2b9aa5d&_xt=.js">
+    </script>
+    <script type="text/javascript"
+        src="https://4977400.app.netsuite.com/core/media/media.nl?id=134350&c=4977400&h=b7520047576dbd671507&_xt=.js">
+    </script>
+    <script type="text/javascript"
+        src="https://4977400.app.netsuite.com/core/media/media.nl?id=134347&c=4977400&h=78d1ec44cc9fca90c8ab&_xt=.js">
+    </script>
+    <link rel="stylesheet"
+        href="https://4977400.app.netsuite.com/core/media/media.nl?id=134344&c=4977400&h=7d6b7739149470b926df&_xt=.css" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        var WINES_CATALOG = [];
+        var CODES_DATA_OBJ = JSON.parse('{{CODES_DATA_OBJ}}');
+        window.onload = function () {
+
+
+            var codes = {};
+            if(CODES_DATA_OBJ.codesDataObjArr.length > 0){
+                var dataArr = CODES_DATA_OBJ.codesDataObjArr;
+                for(var i = 0; i < dataArr.length; i++){
+                    codes[dataArr[i].code.toLowerCase()] = dataArr[i];
+                }
+            }
+            if(CODES_DATA_OBJ.codesTypeObjArray.length > 0){
+                Zachys.LicensePlate.TypesArr =  CODES_DATA_OBJ.codesTypeObjArray;
+            }
+            Zachys.LicensePlate.CODES = codes;
+
+            console.log("Zachys.LicensePlate.TypesArr:", Zachys.LicensePlate.TypesArr);
+            console.log("Zachys.LicensePlate.CODES:", Zachys.LicensePlate.CODES);
+            WINES_CATALOG = JSON.parse('{{WINES_CATALOG}}');
+            window.suiteletUrl = window.location.protocol + '//' +  window.location.hostname + '{{SUITELET_URL}}';
+
+
+            document.body.appendChild(new Zachys.LicensePlate().holder);
+
+
+            $('#close-btn').click(function () {
+                var protocol = window.location.protocol;
+                var hostName = window.location.hostname;
+                var pathname = '/app/common/custom/custrecordentry.nl?rectype=272&id=';
+                if (window.consignmentid) {
+                    var consignmentUrl = pathname + window.consignmentid;
+                    window.location.href = consignmentUrl;
+
+                }
+            });
+
+            $('.new-lp').click(function () {
+                location.reload();
+            });
+        }
+    </script>
+</head>
+<style>
+    .lds-spinner {
+        color: official;
+        display: inline-block;
+        position: relative;
+        width: 64px;
+        height: 64px;
+    }
+
+    .lds-spinner div {
+        transform-origin: 32px 32px;
+        animation: lds-spinner 1.2s linear infinite;
+    }
+
+    .lds-spinner div:after {
+        content: " ";
+        display: block;
+        position: absolute;
+        top: 3px;
+        left: 29px;
+        width: 5px;
+        height: 14px;
+        border-radius: 20%;
+        background: #fff;
+    }
+
+    .lds-spinner div:nth-child(1) {
+        transform: rotate(0deg);
+        animation-delay: -1.1s;
+    }
+
+    .lds-spinner div:nth-child(2) {
+        transform: rotate(30deg);
+        animation-delay: -1s;
+    }
+
+    .lds-spinner div:nth-child(3) {
+        transform: rotate(60deg);
+        animation-delay: -0.9s;
+    }
+
+    .lds-spinner div:nth-child(4) {
+        transform: rotate(90deg);
+        animation-delay: -0.8s;
+    }
+
+    .lds-spinner div:nth-child(5) {
+        transform: rotate(120deg);
+        animation-delay: -0.7s;
+    }
+
+    .lds-spinner div:nth-child(6) {
+        transform: rotate(150deg);
+        animation-delay: -0.6s;
+    }
+
+    .lds-spinner div:nth-child(7) {
+        transform: rotate(180deg);
+        animation-delay: -0.5s;
+    }
+
+    .lds-spinner div:nth-child(8) {
+        transform: rotate(210deg);
+        animation-delay: -0.4s;
+    }
+
+    .lds-spinner div:nth-child(9) {
+        transform: rotate(240deg);
+        animation-delay: -0.3s;
+    }
+
+    .lds-spinner div:nth-child(10) {
+        transform: rotate(270deg);
+        animation-delay: -0.2s;
+    }
+
+    .lds-spinner div:nth-child(11) {
+        transform: rotate(300deg);
+        animation-delay: -0.1s;
+    }
+
+    .lds-spinner div:nth-child(12) {
+        transform: rotate(330deg);
+        animation-delay: 0s;
+    }
+
+    @keyframes lds-spinner {
+        0% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+        }
+    }
+
+    .loader-inner {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        background: black;
+        opacity: 0.3;
+    }
+
+    .custom-boxes {
+      padding-top: 20px;
+        overflow: hidden;
+        width: 315px; /* zain 21-01-2020 */
+        margin: 0 auto;
+        /* webkit-box-shadow: 0px 3px 8px -2px rgba(235, 235, 235, 1);
+        -moz-box-shadow: 0px 3px 8px -2px rgba(235, 235, 235, 1);
+        box-shadow: 0px 3px 8px -2px rgb(218, 214, 214); */
+    }
+
+    .custom-boxes span {
+        float: left;
+        border: 1px solid #c3c3c3;
+        /* border-top: 0; */
+        text-align: center;
+        padding: 5px 25px;
+        height: 65px; /* zain 21-01-2020 */
+    }
+
+    .custom-boxes span:nth-child(1) {
+        border-right: 0;
+        border-bottom-left-radius: 4px;
+    }
+
+    .custom-boxes span:nth-child(3) {
+        border-left: 0;
+        border-bottom-right-radius: 4px;
+    }
+
+    .custom-boxes p {
+        margin: 7px 0 0 0;
+    }
+
+    .custom-boxes p:nth-child(1) {
+        font-weight: bold;
+        color: #a2a2a2;
+    }
+
+    .custom-boxes p:nth-child(2) {
+        color: #696868;
+        font-weight: bold;
+    }
+
+    .custom-boxes span:nth-child(2) p:nth-child(2) {
+        color: #1aef1a;
+        margin-top: 4px;
+    }
+    #box-type-value, #box-photo-value{
+        font-size: 14px;
+
+    }
+</style>
+
+<body>
+    <div class="loader-custom">
+        <div id='loader-spin' style="position: absolute;z-index: 9999;left: 45%;top: 40%;">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div id='loader-inn'>
+
+        </div>
+      
+    </div>
+    <!-- zain 11-11-19 start-->
+    <div class="license-plate-final-step">
+        <div class="header">
+            <div>
+                <h1 ref="title">Confirmation</h1>
+                <div ref="filterHolder">
+                    <div class="filters">
+                        <div class="code-input" ref="code"> <b><svg aria-hidden="true" focusable="false"
+                                    data-prefix="fas" data-icon="search" class="svg-inline--fa fa-search fa-w-16"
+                                    role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                    <path fill="currentColor"
+                                        d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z">
+                                    </path>
+                                </svg></b> <input type="text" ref="search"> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="license-plate-summary" style="height: auto;">
+            
+        </div>
+        <div class="license-plate-2">
+            <div class="content">
+                <div class="product-line" ref="products">
+                    <div style="padding-bottom: 53px;" class="item box-summary"><b
+                            style="text-align: center;padding-bottom: 48px;"><b class="name" ref="name">LP Created
+                                Successfully</b></b><span style="font-size: 51px;text-align: center;padding-left: 0;"
+                            id="new-lp-number" class="price" ref="price"></span>
+                            <div class="custom-boxes">
+                                <span>
+                                    <p>Type</p>
+                                    <p id="box-type-value">&nbsp;</p>
+                                </span>
+                                <span>
+                                    <p>Cage</p>
+                                    <p id="box-cage-value"></p> <!-- &#10004;-->
+                                </span>
+                                <span>
+                                    <p>Photo</p>
+                                    <p id="box-photo-value">&nbsp;</p>
+                                </span>
+                            </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="footer-custom">
+                <div class="buttons">
+                    <span class="button" id="close-btn">Return to Consignment</span>
+                    <span class="button new-lp">Create Another LP</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
