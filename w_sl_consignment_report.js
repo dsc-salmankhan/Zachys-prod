@@ -198,10 +198,12 @@ function consignmentReportPdf(request, response, conRecId) {
                 var highEstimate = HIGH_ESTIMATE.toFixed(0);
                 template += "<td width='30%' align='left' font-family='arialFont'><span font-family='arialFontBold'>High Estimate:</span>\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 <span style='font-weight:normal'>" + currencySymbol + "</span></td>";
                 template += "<td width='30%' align='left' >" + highEstimate.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "</td>";
+            } else if (s == 2 && consignmentObj.totalReserve != 0) {
+                template += "<td width='30%' align='left' font-family='arialFont'><span font-family='arialFontBold'>Reserve:</span> \xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 <span style='font-weight:normal !important;'>" + currencySymbol + "</span></td>";
+                template += "<td width='30%' >" + consignmentObj.totalReserve.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "</td>";
             } else {
                 template += "<td width='30%'></td>";
                 template += "<td width='30%' ></td>";
-
             }
             var qtySumValue = consignmentObj.tableDataValues[s].quantitySum ? consignmentObj.tableDataValues[s].quantitySum : 0;
 
@@ -234,18 +236,22 @@ function consignmentReportPdf(request, response, conRecId) {
             template += "<td align='left' width='10%' ></td>";
             template += "</tr>";
         }
-
-        if (consignmentObj.totalReserve && consignmentObj.totalReserve != 0) {
+        nlapiLogExecution('debug', "consignmentObj.tableDataValues.length", consignmentObj.tableDataValues.length)
+        if ((consignmentObj.tableDataValues.length == 1 || consignmentObj.tableDataValues.length == 2) && consignmentObj.totalReserve != 0) {
+            nlapiLogExecution('debug', "Hello", 'yes got here')
             template += "<tr>";
             template += "<td width='30%' align='left' font-family='arialFont'><span font-family='arialFontBold'>Reserve:</span> \xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 <span style='font-weight:normal !important;'>" + currencySymbol + "</span></td>";
-            template += "<td width='30%' align='left' >" + (consignmentObj.totalReserve).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "</td>";
+            template += "<td width='30%' align='left' >" + consignmentObj.totalReserve.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "</td>";
             template += "<td align='right' width='20%'></td>";
             template += "<td align='left' width='10%'></td>";
             template += "<td align='left' width='10%' ></td>";
             template += "</tr>";
+        }
 
+        if (consignmentObj.totalReserve && consignmentObj.totalReserve != 0) {
             TOTAL_BOTTLE_SUM = TOTAL_BOTTLE_SUM;
         } else {
+            template = template.replace(/{{REPLACE_RESERVE_VALUE}}/g, '');
             TOTAL_BOTTLE_SUM = TOTAL_BOTTLE_SUM;
         }
 
@@ -257,28 +263,12 @@ function consignmentReportPdf(request, response, conRecId) {
         template += "<td align='left'  style='border-top: 1px solid black;font-family:arialFontBold;' width='10%'>Total</td>";
         template += "<td align='right' style='border-top: 1px solid black;font-family:arialFontBold;' width='10%'>Bottles</td>";
         template += "</tr>";
-        // template += "<tr>";
-        // //rows for Event High/Low Estimate
-        // var eventHighEstimate = EVENT_HIGH_ESTIMATE.toFixed(2);
-        // template += "<td width='30%' align='left' font-family='arialFontBold'>Event High Estimate:</td>";
-        // template += "<td width='30%' align='left' >" + eventHighEstimate + "</td>";
-        // template += "</tr>";
-        // template += "<tr>";
-        // var eventLowEstimate = EVENT_LOW_ESTIMATE.toFixed(2);
-        // template += "<td width='30%' align='left' font-family='arialFontBold'>Event Low Estimate:</td>";
-        // template += "<td width='30%' align='left' >" + eventLowEstimate + "</td>";
-        // template += "</tr>";
+
         template += "<tr>";
         //rows for Screener High/Low Estimate
-        var screenerHighEstimate = SCREENER_HIGH_ESTIMATE.toFixed(2);
         template += "<td width='30%' align='left' font-family='arialFontBold' style='color:white;'>Screener\xa0High\xa0Estimate:</td>";
         template += "<td width='30%' align='left' >\xa0</td>";
         template += "</tr>";
-        // template += "<tr>";
-        // var screenerLowEstimate = SCREENER_LOW_ESTIMATE.toFixed(2);
-        // template += "<td width='30%' align='left' font-family='arialFontBold'>Screener Low Estimate:</td>";
-        // template += "<td width='30%' align='left' >" + screenerLowEstimate + "</td>";
-        // template += "</tr>";
         template += "</table>";
         template += "</td>";
         template += "</tr>";
@@ -414,6 +404,7 @@ function getConsignmentRec(recConId) {
     var title = 'getConsignmentRec';
     try {
         nlapiLogExecution('Debug', "function " + title, "Start");
+        var sizeMappingObj = getSizeMappingObj();
         var objConsignment = {};
         var tableDataValues = [];
         var tempBottle = "";
@@ -540,10 +531,12 @@ function getConsignmentRec(recConId) {
                 }
 
                 if (tempConRecivedQty != null) {
+                    var sizeInLiters = sizeMappingObj[bottleSizeText];
                     BOTTLE_COUNT_ARR.push({
                         bottleSize: tempBottleSize,
                         conQty: tempConRecivedQty,
-                        bottleSizeText: bottleSizeText
+                        bottleSizeText: bottleSizeText,
+                        sizeInLiters: sizeInLiters
                     });
                 }
 
@@ -554,7 +547,7 @@ function getConsignmentRec(recConId) {
             objConsignment.totalReserve = totalReserve;
         }
         //Change-End ZAC-129
-        sortDataAscendingOrder(BOTTLE_COUNT_ARR, ['bottleSize']);
+        sortDataAscendingOrder(BOTTLE_COUNT_ARR, ['sizeInLiters']);
         BOTTLE_COUNT_ARR.reduce(function (r, o) {
             if (r[o.bottleSize]) {
                 tempBottle = o.bottleSize;
@@ -666,4 +659,27 @@ function getConsignerRec(consignerId) {
         nlapiLogExecution('Error', "ERROR IN ::" + title, e.message);
     }
 
+}
+
+function getSizeMappingObj() {
+    var sizeMappingObj = {};
+    var filters = new Array();
+    filters.push(new nlobjSearchFilter('isinactive', null, 'is', 'F'));
+
+    var columns = [];
+    columns[0] = new nlobjSearchColumn('name');
+    columns[1] = new nlobjSearchColumn('custrecord_size_in_liter');
+
+    var result = nlapiSearchRecord('customrecord_size_list', null, filters, columns);
+    for (i = 0; i < result.length; i++) {
+        var sizeName = result[i].getValue(columns[0]);
+        var sizeInLiters = result[i].getValue(columns[1]) || 0;
+
+        if (sizeName && sizeInLiters) {
+            sizeMappingObj[sizeName] = parseFloat(sizeInLiters);
+        }
+
+    }
+
+    return sizeMappingObj;
 }

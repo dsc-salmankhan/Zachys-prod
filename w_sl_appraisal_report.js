@@ -309,6 +309,7 @@ function getAppraisalRec(recAppId) {
     var title = 'getAppraisalRec';
     try {
         nlapiLogExecution('Debug', "function " + title, "Start");
+        var sizeMappingObj = getSizeMappingObj();
         var objAppraisal = {};
         var tableDataValues = [];
         var tempBottle = "";
@@ -436,9 +437,12 @@ function getAppraisalRec(recAppId) {
 
                 LOW_ESTIMATE += tempAppLineExtLowRound ? parseInt(tempAppLineExtLowRound) : 0;
                 HIGH_ESTIMATE += tempAppLineExtHighRound ? parseInt(tempAppLineExtHighRound) : 0;
+
+                var sizeInLiters = sizeMappingObj[tempBottleSize];
                 BOTTLE_COUNT_ARR.push({
                     bottleSize: tempBottleSize,
                     appQty: tempAppraisalQty,
+                    sizeInLiters: sizeInLiters
                 });
             }
 
@@ -446,7 +450,7 @@ function getAppraisalRec(recAppId) {
 
         objAppraisal.totalReserve = totalReserve;
 
-        sortDataAscendingOrder(BOTTLE_COUNT_ARR, ['bottleSize']);
+        sortDataAscendingOrder(BOTTLE_COUNT_ARR, ['sizeInLiters']);
         nlapiLogExecution('Debug', "BOTTLE_COUNT_ARR " + title, JSON.stringify(BOTTLE_COUNT_ARR));
         BOTTLE_COUNT_ARR.reduce(function (r, o) {
             if (r[o.bottleSize]) {
@@ -583,4 +587,27 @@ function getConsignerRec(consignerId) {
 
 function isNullOrEmpty(valueStr) {
     return (valueStr == null || valueStr == "" || valueStr == undefined);
+}
+
+function getSizeMappingObj() {
+    var sizeMappingObj = {};
+    var filters = new Array();
+    filters.push(new nlobjSearchFilter('isinactive', null, 'is', 'F'));
+
+    var columns = [];
+    columns[0] = new nlobjSearchColumn('name');
+    columns[1] = new nlobjSearchColumn('custrecord_size_in_liter');
+
+    var result = nlapiSearchRecord('customrecord_size_list', null, filters, columns);
+    for (i = 0; i < result.length; i++) {
+        var sizeName = result[i].getValue(columns[0]);
+        var sizeInLiters = result[i].getValue(columns[1]) || 0;
+
+        if (sizeName && sizeInLiters) {
+            sizeMappingObj[sizeName] = parseFloat(sizeInLiters);
+        }
+
+    }
+
+    return sizeMappingObj;
 }
