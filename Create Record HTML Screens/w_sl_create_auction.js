@@ -436,6 +436,10 @@ define(['N/record', 'N/file', 'N/search', 'N/url'],
 
                     wines.push(wineData);
 
+                    if (searchDataLine.length == j + 1) {
+                        stockIdMapping[stockId] = wines;
+                    }
+
                 }
 
             }

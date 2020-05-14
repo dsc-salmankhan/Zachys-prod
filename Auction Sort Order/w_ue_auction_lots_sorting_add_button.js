@@ -19,11 +19,11 @@
                       var auctionType = recObj.getValue({
                           fieldId: 'custrecord_auction_type'
                       });
-                      context.form.addButton({
-                          id: 'custpage_btn_create_vendor_bill',
-                          label: 'Create Vendor Bill',
-                          functionName: 'createVendorBill(' + recordId + ')'
-                      });
+                      // context.form.addButton({
+                      //    id: 'custpage_btn_create_vendor_bill',
+                      //    label: 'Create Vendor Bill',
+                     //     functionName: 'createVendorBill(' + recordId + ')'
+                     // });
 
                       context.form.addButton({
                           id: 'custpage_btn_sorting_order_rec',

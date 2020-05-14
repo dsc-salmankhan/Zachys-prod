@@ -689,7 +689,24 @@ define(['N/record', 'N/file', 'N/search', 'N/url', 'N/runtime'],
                 ]
             });
 
-            var appraisalLinesData = appraisalLinesSearchObj.run().getRange(0, 1000);
+            var appraisalLinesData = [];
+            var count = 0;
+            var pageSize = 1000;
+            var start = 0;
+
+            // run saved search
+            do {
+                var tempAuctionRecData = appraisalLinesSearchObj.run().getRange({
+                    start: start,
+                    end: start + pageSize
+                });
+
+                appraisalLinesData = appraisalLinesData.concat(tempAuctionRecData);
+                count = tempAuctionRecData.length;
+                start += pageSize;
+            } while (count == pageSize);
+
+
             if (appraisalLinesData) {
                 for (var i = 0; i < appraisalLinesData.length; i++) {
                     var appraisalLineInternalId = appraisalLinesData[i].getValue({
@@ -718,16 +735,16 @@ define(['N/record', 'N/file', 'N/search', 'N/url', 'N/runtime'],
                     });
                     var appraisalLineBottleLow = appraisalLinesData[i].getValue({
                         name: "custrecord_applines_bottle_low"
-                    });
+                    }) || 0;
                     var appraisalLineBottleHigh = appraisalLinesData[i].getValue({
                         name: "custrecord_applines_bottle_high"
-                    });
+                    }) || 0;
                     var appraisalLineExtLow = appraisalLinesData[i].getValue({
                         name: "custrecord_applines_ext_low"
-                    });
+                    }) || 0;
                     var appraisalLineExtHigh = appraisalLinesData[i].getValue({
                         name: "custrecord_applines_ext_high"
-                    });
+                    }) || 0;
                     var appraisalLineVintage = appraisalLinesData[i].getValue({
                         name: "custrecord_applines_vintage"
                     });
@@ -788,9 +805,9 @@ define(['N/record', 'N/file', 'N/search', 'N/url', 'N/runtime'],
                         size: appraisalLineSize,
                         sizeId: appraisalLineSizeId,
                         vintage: appraisalLineVintage,
-                        vintageId: '',
-                        lowPrice: appraisalLineBottleLow,
-                        highPrice: appraisalLineBottleHigh,
+                        vintageId: appraisalLineVintage ? parseInt(appraisalLineVintage) : 0,
+                        lowPrice: parseFloat(appraisalLineBottleLow),
+                        highPrice: parseFloat(appraisalLineBottleHigh),
                         defaultLowPrice: appraisalLineBottleLow,
                         defaultHightPrice: appraisalLineBottleHigh,
                         estType: '',
@@ -815,8 +832,8 @@ define(['N/record', 'N/file', 'N/search', 'N/url', 'N/runtime'],
                         country: appraisalLineCountry.replace(/'/g, "---").replace(/"/g, '####'),
                         countryId: '',
                         globalEstimateInternalId: appraisalLineGlobalEstimate,
-                        extLowEstimate: appraisalLineExtLow,
-                        extHighEstimate: appraisalLineExtHigh,
+                        extLowEstimate: parseFloat(appraisalLineExtLow),
+                        extHighEstimate: parseFloat(appraisalLineExtHigh),
                         consignorLocation: appraisalLineConsignorLocation,
                         provenance: appraisalLineProvenance,
                         screener: appraisalLineScreener,

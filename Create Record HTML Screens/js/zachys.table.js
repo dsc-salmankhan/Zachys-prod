@@ -114,32 +114,70 @@ Zachys.Table.Table = function(settings) {
   }
 
   this.UI.first.onclick = function(){
-    Zachys.Stock.getItemsDetail(0, ROWS_PER_PAGE);
-    self.setState({ currentPage: 0 })
+    var isLineTableId = this.parentNode.parentElement.parentElement.id;
+
+    if(isLineTableId == 'table-container-lines'){
+      self.setState({ currentPage: 0 })
+    } else {
+
+      self.state.tableLine = true;
+      Zachys.Stock.getItemsDetail(0, ROWS_PER_PAGE);
+      self.setState({ currentPage: 0 });      
+    }
   };
   this.UI.prev.onclick = function(){
-    var currentPage = Math.max(self.state.currentPage - 1, 0);
-    var startIndex = Number(currentPage * ROWS_PER_PAGE);
-    var endIndex = Number((currentPage + 1) * ROWS_PER_PAGE);
+    var isLineTableId = this.parentNode.parentElement.parentElement.id;
 
-    Zachys.Stock.getItemsDetail(startIndex, endIndex);
-    self.setState({ currentPage:  currentPage})
+    if(isLineTableId == 'table-container-lines'){
+      self.setState({ currentPage: Math.max(self.state.currentPage - 1, 0) })
+    } else {
+      self.state.tableLine = true;
+      var currentPage = Math.max(self.state.currentPage - 1, 0);
+      var startIndex = Number(currentPage * ROWS_PER_PAGE);
+      var endIndex = Number((currentPage + 1) * ROWS_PER_PAGE);
+  
+      Zachys.Stock.getItemsDetail(startIndex, endIndex);
+      self.setState({ currentPage:  currentPage})
+      
+    }
+
   };
   this.UI.next.onclick = function(){
-    var currentPage = Math.min(self.state.currentPage + 1, self.state.totalPages - 1) ;
-    var startIndex = Number(currentPage * ROWS_PER_PAGE);
-    var endIndex = Number((currentPage + 1) * ROWS_PER_PAGE);
+    var isLineTableId = this.parentNode.parentElement.parentElement.id;
 
-    Zachys.Stock.getItemsDetail(startIndex, endIndex);
-    self.setState({ currentPage: currentPage })
+    if(isLineTableId == 'table-container-lines'){
+      self.state.tableLine = true;
+      self.setState({ currentPage: Math.min(self.state.currentPage + 1, self.state.totalPages - 1) })
+
+    } else {
+      var currentPage = Math.min(self.state.currentPage + 1, self.state.totalPages - 1) ;
+      var startIndex = Number(currentPage * ROWS_PER_PAGE);
+      var endIndex = Number((currentPage + 1) * ROWS_PER_PAGE);
+  
+      Zachys.Stock.getItemsDetail(startIndex, endIndex);
+      self.setState({ currentPage: currentPage })
+      
+    }
+
+
   };
   this.UI.last.onclick = function(){
-    var currentPage = self.state.totalPages - 1;
-    var startIndex = Number(currentPage * ROWS_PER_PAGE);
-    var endIndex = Number((currentPage + 1) * ROWS_PER_PAGE);
+    var isLineTableId = this.parentNode.parentElement.parentElement.id;
 
-    Zachys.Stock.getItemsDetail(startIndex, endIndex);
-    self.setState({ currentPage: currentPage })
+    if(isLineTableId == 'table-container-lines'){
+      self.state.tableLine = true;
+      self.setState({ currentPage: Math.ceil(self.state.totalPages) - 1 })
+
+    } else {
+      var currentPage = self.state.totalPages - 1;
+      var startIndex = Number(currentPage * ROWS_PER_PAGE);
+      var endIndex = Number((currentPage + 1) * ROWS_PER_PAGE);
+  
+      Zachys.Stock.getItemsDetail(startIndex, endIndex);
+      self.setState({ currentPage: currentPage })
+      
+    }
+
   };
 
   this.filterItems = [];
@@ -179,6 +217,9 @@ Zachys.Table.Table.prototype.onState = function(state) {
       }
       return 0;
     });
+    if(!state.hasOwnProperty('totalPages')){
+      this.reset();
+    }
     for (var iItem = 0; iItem < this.items.length; iItem++){
       if (this.items[iItem].row.parentNode){
         this.UI.content.fix.appendChild(this.items[iItem].rowFixed);
@@ -203,6 +244,7 @@ Zachys.Table.Table.prototype.onState = function(state) {
   }
 
   if (state.hasOwnProperty('totalPages') || state.hasOwnProperty('currentPage')) {
+    
     this.UI.paging.innerHTML = '';
     var first = Math.max(this.state.currentPage - 2, 0);
     var last = Math.min(first + 5, this.state.totalPages);
@@ -211,21 +253,36 @@ Zachys.Table.Table.prototype.onState = function(state) {
       button.innerHTML = iPage + 1;
       button.className = 'selected';
       button.page = iPage;
-      button.onclick = function(){
-        var startIndex = Number(this.page * ROWS_PER_PAGE);
-        var endIndex = Number((this.page + 1) * ROWS_PER_PAGE);
+      if(this.state.tableLine || this.rowsPerPage == 50){ 
+        
+        button.onclick = function(){
+            self.setState({ currentPage: this.page })
+          
+        }
 
-        Zachys.Stock.getItemsDetail(startIndex, endIndex);
-        self.setState({ currentPage: this.page })
+      } else {
+
+        button.onclick = function(){
+            var startIndex = Number(this.page * ROWS_PER_PAGE);
+            var endIndex = Number((this.page + 1) * ROWS_PER_PAGE);
+    
+            Zachys.Stock.getItemsDetail(startIndex, endIndex);
+            self.setState({ currentPage: this.page }) 
+          
+        }
+
       }
       this.UI.paging.appendChild(button);
     }
 
-    // for (var iItem = 0; iItem < this.items.length; iItem++) {
-    //   var item = this.items[iItem];
-    //   item.row.style.display = ('none');
-    //   item.rowFixed.style.display = ('none');
-    // }
+    if(this.state.tableLine || this.rowsPerPage == 50){
+      for (var iItem = 0; iItem < this.items.length; iItem++) {
+        var item = this.items[iItem];
+        item.row.style.display = ('none');
+        item.rowFixed.style.display = ('none');
+      }
+
+    }
 
     var length = Math.min(this.rowsPerPage * (this.state.currentPage + 1), this.filterItems.length)
     var tabIndex = 1;

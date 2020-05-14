@@ -496,28 +496,37 @@ define(['N/record', 'N/file', 'N/search', 'N/url'],
 
                     var lpItemQtySumArr = [];
                     if (lpId) {
-                        log.debug("lpId:", JSON.stringify(lpId));
-                        log.debug("lpsQtyDataArr:", JSON.stringify(lpsQtyDataArr));
+                        if (i == 0) {
+                            log.audit("lpsQtyDataArr:", JSON.stringify(lpsQtyDataArr));
+                        }
+                        log.audit("lpId:", JSON.stringify(lpId));
+
                         var splitLps = lpId.split(',');
                         for (var ii = 0; ii < splitLps.length; ii++) {
-                            var lpItemQtySum, lpRecName;
-                            for (var kk = 0; kk < lpsQtyDataArr.length; kk++) {
-                                if (lpsQtyDataArr[kk].lpId == splitLps[ii] && lpsQtyDataArr[kk].itemId == itemId) {
-                                    if (lpsQtyDataArr[kk].qtySum) {
-                                        qtyReceived += parseFloat(lpsQtyDataArr[kk].qtySum);
+                            if (lpsQtyDataArr.length > 0) {
+                                var lpItemQtySum, lpRecName;
+                                var isFound = false;
+                                for (var kk = 0; kk < lpsQtyDataArr.length; kk++) {
+                                    if (lpsQtyDataArr[kk].lpId == splitLps[ii] && lpsQtyDataArr[kk].itemId == itemId) {
+                                        if (lpsQtyDataArr[kk].qtySum) {
+                                            qtyReceived += parseFloat(lpsQtyDataArr[kk].qtySum);
+                                        }
+                                        lpItemQtySum = lpsQtyDataArr[kk].qtySum;
+                                        lpRecName = lpsQtyDataArr[kk].lpName;
+                                        lpsQtyDataArr.splice(kk, 1);
+                                        isFound = true;
+                                        break;
                                     }
-                                    lpItemQtySum = lpsQtyDataArr[kk].qtySum;
-                                    lpRecName = lpsQtyDataArr[kk].lpName;
-                                    lpsQtyDataArr.splice(kk, 1);
-                                    break;
+                                }
+
+                                lpItemQtySum = lpItemQtySum ? lpItemQtySum : '';
+                                lpRecName = lpRecName ? lpRecName : '';
+                                if (isFound) {
+                                    var tempInfo = lpRecName + '(' + lpItemQtySum + ')';
+                                    lpItemQtySumArr.push(tempInfo);
+
                                 }
                             }
-
-                            lpItemQtySum = lpItemQtySum ? lpItemQtySum : '';
-                            lpRecName = lpRecName ? lpRecName : '';
-                            var tempInfo = lpRecName + '(' + lpItemQtySum + ')';
-
-                            lpItemQtySumArr.push(tempInfo);
                         }
                     }
 
@@ -581,7 +590,17 @@ define(['N/record', 'N/file', 'N/search', 'N/url'],
                     })
                 ]
             });
-            var searchData = lpsObj.run().getRange(0, 1000);
+            var searchData = [];
+            var count = 0;
+            var pageSize = 1000;
+            var start = 0;
+            do {
+                var searchObjArr = lpsObj.run().getRange(start, start + pageSize);
+
+                searchData = searchData.concat(searchObjArr);
+                count = searchObjArr.length;
+                start += pageSize;
+            } while (count == pageSize);
             if (searchData) {
                 for (var i = 0; i < searchData.length; i++) {
                     var internalid = searchData[i].getValue({
@@ -618,12 +637,23 @@ define(['N/record', 'N/file', 'N/search', 'N/url'],
                     ]
                 });
 
-                var lpItemQtyData = lpItemQty.run().getRange(0, 1000);
+                // var lpItemQtyData = lpItemQty.run().getRange(0, 1000);
+                var lpItemQtyData = [];
+                var count = 0;
+                var pageSize = 1000;
+                var start = 0;
+                do {
+                    var lpItemSearchObjArr = lpItemQty.run().getRange(start, start + pageSize);
+
+                    lpItemQtyData = lpItemQtyData.concat(lpItemSearchObjArr);
+                    count = lpItemSearchObjArr.length;
+                    start += pageSize;
+                } while (count == pageSize);
+
                 if (lpItemQtyData) {
                     for (var j = 0; j < lpItemQtyData.length; j++) {
                         var obj = {};
                         var internalid = lpItemQtyData[j].id;
-                        log.debug("lpItemQtyData[j]::", lpItemQtyData[j].id)
                         var qtySum = lpItemQtyData[j].getValue({
                             name: 'custrecord_lp_item_quantity'
                         });

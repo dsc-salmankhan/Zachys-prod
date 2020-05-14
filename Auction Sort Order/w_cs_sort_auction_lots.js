@@ -3,7 +3,7 @@
  *@NScriptType ClientScript
  */
 
-var OTHER_SORTING_ORDER = 46;
+var OTHER_SORTING_ORDER = 50;
 define(['N/currentRecord', 'N/record', 'N/url', 'N/https', 'N/search'],
     function (currentRecord, record, url, https, search) {
         function sortAuctionLots(dataObj) {
@@ -112,7 +112,10 @@ define(['N/currentRecord', 'N/record', 'N/url', 'N/https', 'N/search'],
 
 
             }
-            var recId = currentRec.save();
+            var recId = currentRec.save({
+    						enableSourcing: false,
+    						ignoreMandatoryFields: true
+						});
 
             return true;
         }
@@ -314,7 +317,10 @@ define(['N/currentRecord', 'N/record', 'N/url', 'N/https', 'N/search'],
 
                 }
             }
-            var recId = currentRec.save();
+            var recId = currentRec.save({
+    						enableSourcing: false,
+    						ignoreMandatoryFields: true
+						});
 
             return true;
         }

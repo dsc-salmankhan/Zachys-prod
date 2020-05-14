@@ -963,6 +963,7 @@ Zachys.Stock.getMixedCreationData = function (stockIdsData) {
     }
   }
 
+
   var assessmentCode = assessmentCodes ? Zachys.Stock.calculateSumOfSameCode(assessmentCodes, true) : [];
   var assessmentFft = assessmentFfts ? Zachys.Stock.calculateSumOfSameCode(assessmentFfts, true) : [];
   var assessmentNote = assessmentCode.concat(assessmentFft);
@@ -990,11 +991,9 @@ Zachys.Stock.getMixedCreationData = function (stockIdsData) {
   tempObjInfo.estimatelow = stockIdsData[0].estimatelowtotal || stockIdsData[0].estimatelow;
   tempObjInfo.assessmentNote = assessmentNote;
   tempDataArr.push(tempObjInfo);
-
   var strObjData = Zachys.Stock.getJoinOfMixedLotAssessmentNote(tempDataArr[0].assessmentNote);
   tempDataArr[0].assessmentNote = strObjData.assessmentStr;
   tempDataArr[0].mixLotDeatils = isNotMixedData ? stockIdsData[0].mixLotDeatils : "";
-
   return tempDataArr;
 }
 
@@ -1056,6 +1055,7 @@ Zachys.Stock.getStockidsData = function () {
         var auctionDisplayName = document.querySelector("#auc-plate-lines-auction-display-name-" + i + "-" + j);
         var packageTypeId = document.querySelector("#auc-plate-lines-package-type-id-" + i + "-" + j);
 
+
         if (aucplatelineiteminternalid) {
           objInfo.aucplatelineiteminternalid = aucplatelineiteminternalid ? aucplatelineiteminternalid.innerHTML : '';
           objInfo.sku = sku ? sku.innerHTML : '';
@@ -1085,17 +1085,39 @@ Zachys.Stock.getStockidsData = function () {
 
           var tempQty = objInfo.quantity ? objInfo.quantity + ' ' : '';
           var tempSize = objInfo.size ? objInfo.size + ' ' : '';
-          var strMixDetail = '- ' + tempQty + tempSize + objInfo.auctionDisplayName + '\n';
-          mixLotArrData.push(strMixDetail);
+          // var strMixDetail = '- ' + tempQty + tempSize + objInfo.auctionDisplayName + '\n';
+          var vintageSort = objInfo.vintage ? parseInt(objInfo.vintage.replace('(', "").replace(")", "")) : 0
+          mixLotArrData.push({
+            vintage: vintageSort,
+            auctionDisplayName: objInfo.auctionDisplayName,
+            qty: tempQty,
+            size: tempSize
+          });
 
           var qtyValue = objInfo.quantity ? objInfo.quantity : 0;
           if (objInfo.assessmentCode) {
-            var noteObjectData = Zachys.Stock.getCodeObjectData(objInfo.assessmentCode, qtyValue, objInfo.auctionDisplayName, objInfo.size, objInfo.itemid);
+            var noteObjectData = Zachys.Stock.getCodeObjectData(objInfo.assessmentCode, qtyValue, objInfo.auctionDisplayName, objInfo.size, objInfo.itemid, objInfo.vintage.replace('(', '').replace(')', ''), objInfo.aucplatelineiteminternalid);
             objInfo.assessmentCode = noteObjectData;
+          } else {
+            objInfo.assessmentCode = [{
+              codeQty: 0,
+              codeText: '',
+              transformedText: '',
+              transformedTextPlural: '',
+              packType: '',
+              orderingType: '',
+              quantity: parseInt(qtyValue),
+              auctionDisplayName: objInfo.auctionDisplayName,
+              size: objInfo.size,
+              itemId: objInfo.itemid,
+              aucplatelineiteminternalid: objInfo.aucplatelineiteminternalid,
+              vintage: objInfo.vintage ? parseInt(objInfo.vintage.replace('(', '').replace(')', '')) : 0,
+              mixedLot: true
+            }]
           }
 
           if (objInfo.assessmentFft) {
-            var fftObjectData = Zachys.Stock.getNoteObjectData(objInfo.assessmentFft, qtyValue, objInfo.auctionDisplayName, objInfo.size, objInfo.itemid);
+            var fftObjectData = Zachys.Stock.getNoteObjectData(objInfo.assessmentFft, qtyValue, objInfo.auctionDisplayName, objInfo.size, objInfo.itemid, objInfo.vintage, objInfo.aucplatelineiteminternalid);
             objInfo.assessmentFft = fftObjectData;
           }
 
@@ -1117,7 +1139,7 @@ Zachys.Stock.getStockidsData = function () {
 
 
       }
-
+      obj.mixLotDeatils = "";
 
       objDataArr.push(obj);
     }
@@ -1128,7 +1150,40 @@ Zachys.Stock.getStockidsData = function () {
   }
 
   if (objDataArr.length > 0) {
-    objDataArr[0].mixLotDeatils = mixLotArrData.length > 0 ? mixLotArrData.join('') : '';
+    if (mixLotArrData.length) {
+      Zachys.Stock.sortList(mixLotArrData, null, 'byvintage');
+      var tempArrMixLot = [];
+      var previousDisplayName = '';
+      var qty = 0;
+      for (var ii = 0; ii < mixLotArrData.length; ii++) {
+        if (ii == 0) {
+          previousDisplayName = mixLotArrData[ii].auctionDisplayName
+          qty += mixLotArrData[ii].qty ? parseInt(mixLotArrData[ii].qty) : 0;
+        } else if (previousDisplayName != mixLotArrData[ii].auctionDisplayName) {
+          var tempQty = qty != 0 ? qty + " " : "";
+          var tempStrMixDetail = '- ' + tempQty + tempSize + previousDisplayName + '\n';
+          tempArrMixLot.push(tempStrMixDetail);
+          previousDisplayName = mixLotArrData[ii].auctionDisplayName;
+          qty = 0;
+          qty = mixLotArrData[ii].qty ? parseInt(mixLotArrData[ii].qty) : 0;
+
+        } else {
+          qty += mixLotArrData[ii].qty ? parseInt(mixLotArrData[ii].qty) : 0;
+        }
+
+        if (mixLotArrData.length == ii + 1) {
+          var tempQty = qty != 0 ? qty + " " : "";
+          var tempStrMixDetail = '- ' + tempQty + tempSize + previousDisplayName + '\n';
+          tempArrMixLot.push(tempStrMixDetail);
+
+        }
+
+      }
+      objDataArr[0].mixLotDeatils = tempArrMixLot.join('');
+    } else {
+      objDataArr[0].mixLotDeatils = '';
+
+    }
     objDataArr[0].estimatehightotal = highTotal;
     objDataArr[0].estimatelowtotal = lowTotal;
   }
@@ -1136,6 +1191,8 @@ Zachys.Stock.getStockidsData = function () {
 }
 
 Zachys.Stock.createOrUpdateRecord = function (stockCreationData, nextAction, isEachLine, isContainCombination) {
+  console.log(stockCreationData)
+  // return;
   Zachys.Stock.startLoader();
   var objData = {};
   objData.eachline = isEachLine;
@@ -1195,7 +1252,7 @@ Zachys.Stock.getJoinOfAssessmentNote = function (assessmentNoteArr) {
   if (assessmentNoteArr && assessmentNoteArr.length > 0) {
     var isPackagingType = assessmentNoteArr[0].packType == CODE_TYPE_PACKAGING ? true : false;
     for (var k = 0; k < assessmentNoteArr.length; k++) {
-      if (assessmentNoteArr[k]) {
+      if (assessmentNoteArr[k] && !assessmentNoteArr[k].mixedLot) {
 
         var codeQtyInWords = (assessmentNoteArr[k].codeQty && assessmentNoteArr[k].codeQty != 0) ? Zachys.Stock.convertNumberToWords(assessmentNoteArr[k].codeQty).trim() + ' ' : '';
         var addComma = (assessmentNoteArr.length != k + 1) ? ', ' : '';
@@ -1222,11 +1279,27 @@ Zachys.Stock.getJoinOfAssessmentNote = function (assessmentNoteArr) {
 
 Zachys.Stock.getJoinOfMixedLotAssessmentNote = function (assessmentNoteArr) {
   var arrayData = [];
-
   if (assessmentNoteArr && assessmentNoteArr.length > 0) {
     var isPackagingType = assessmentNoteArr[0].packType == CODE_TYPE_PACKAGING ? true : false;
     var itemId = assessmentNoteArr[0].itemId;
     var isItemAdded = false;
+    var mappingItemQty = {};
+    var mappingLicensePlate = {};
+    for (var k = 0; k < assessmentNoteArr.length; k++) {
+      if (!mappingLicensePlate[assessmentNoteArr[k].aucplatelineiteminternalid]) {
+        mappingLicensePlate[assessmentNoteArr[k].aucplatelineiteminternalid] = true;
+      } else {
+        continue;
+      }
+
+
+      if (!mappingItemQty[assessmentNoteArr[k].itemId]) {
+        mappingItemQty[assessmentNoteArr[k].itemId] = assessmentNoteArr[k].quantity ? assessmentNoteArr[k].quantity : 0;
+      } else {
+        mappingItemQty[assessmentNoteArr[k].itemId] += assessmentNoteArr[k].quantity ? assessmentNoteArr[k].quantity : 0;
+      }
+    }
+
     for (var k = 0; k < assessmentNoteArr.length; k++) {
       if (assessmentNoteArr[k]) {
         var addComma = (assessmentNoteArr.length != k + 1) ? ', ' : '';
@@ -1242,7 +1315,7 @@ Zachys.Stock.getJoinOfMixedLotAssessmentNote = function (assessmentNoteArr) {
         }
 
         if (!isItemAdded) {
-          var quantity = assessmentNoteArr[k].quantity + ' ';
+          var quantity = (mappingItemQty[assessmentNoteArr[k].itemId] != 0) ? mappingItemQty[assessmentNoteArr[k].itemId] + ' ' : "";
           var description = assessmentNoteArr[k].auctionDisplayName.trim() + ' ';
           var size = assessmentNoteArr[k].size.trim() + ' ';
 
@@ -1255,7 +1328,8 @@ Zachys.Stock.getJoinOfMixedLotAssessmentNote = function (assessmentNoteArr) {
           }
         }
 
-        var strConcatenatedCode = strInfo + codeQtyInWords.toLocaleLowerCase() + assessmentNoteArr[k].transformedText.trim().toLocaleLowerCase().toLocaleLowerCase() + addComma;
+        var transformedText = (parseInt(assessmentNoteArr[k].codeQty) > 1 && assessmentNoteArr[k].transformedTextPlural) ? assessmentNoteArr[k].transformedTextPlural : assessmentNoteArr[k].transformedText;
+        var strConcatenatedCode = strInfo + codeQtyInWords.toLocaleLowerCase() + transformedText.trim().toLocaleLowerCase().toLocaleLowerCase() + addComma;
         if (isPackagingType && assessmentNoteArr[k].packType != CODE_TYPE_PACKAGING) {
           arrayData[arrayData.length - 1] = arrayData[arrayData.length - 1];
           arrayData[arrayData.length - 1] = arrayData[arrayData.length - 1].substring(0, arrayData[arrayData.length - 1].length - 2)
@@ -1264,7 +1338,13 @@ Zachys.Stock.getJoinOfMixedLotAssessmentNote = function (assessmentNoteArr) {
 
         }
 
-        arrayData.push(strConcatenatedCode);
+        if (assessmentNoteArr[k].mixedLot) {
+          arrayData.push(strInfo);
+
+        } else {
+          arrayData.push(strConcatenatedCode);
+
+        }
 
       }
     }
@@ -1320,19 +1400,19 @@ Zachys.Stock.validateSameItemLps = function (stockIdsData) {
           }
 
         } else {
-          objInfo.isSameType = false;
+          objInfo.isSameType = -999;
           break;
         }
 
       }
 
     } else {
-      objInfo.isSameType = false;
+      objInfo.isSameType = -999;
       break;
     }
   }
 
-  if (aucplateinternalidsArr.length > 1) {
+  if (aucplateinternalidsArr.length > 1 && objInfo.isSameType != -999) {
     objInfo.isSameType = true;
     var updatedStockIdsData = [];
     updatedStockIdsData.push(stockIdsData[0]);
@@ -1360,10 +1440,9 @@ Zachys.Stock.validateSameItemLps = function (stockIdsData) {
   return objInfo;
 }
 
-Zachys.Stock.getCodeObjectData = function (assessmentCode, quantity, auctionDisplayName, size, itemId) {
+Zachys.Stock.getCodeObjectData = function (assessmentCode, quantity, auctionDisplayName, size, itemId, vintage, aucplatelineiteminternalid) {
   var codesDataObjArr = CODES_DATA_OBJ.codesDataObjArr;
   var objArrCodes = [];
-
   var codesArr = assessmentCode.split(",");
   if (codesArr.length > 0) {
     for (var i = 0; i < codesArr.length; i++) {
@@ -1385,7 +1464,9 @@ Zachys.Stock.getCodeObjectData = function (assessmentCode, quantity, auctionDisp
             quantity: parseInt(quantity),
             auctionDisplayName: auctionDisplayName,
             size: size,
-            itemId: itemId
+            itemId: itemId,
+            aucplatelineiteminternalid: aucplatelineiteminternalid,
+            vintage: vintage ? parseInt(vintage) : 0
           })
         }
 
@@ -1399,10 +1480,9 @@ Zachys.Stock.getCodeObjectData = function (assessmentCode, quantity, auctionDisp
 }
 
 
-Zachys.Stock.getNoteObjectData = function (assessmentFft, quantity, auctionDisplayName, size, itemId) {
+Zachys.Stock.getNoteObjectData = function (assessmentFft, quantity, auctionDisplayName, size, itemId, vintage, aucplatelineiteminternalid) {
   var codesTypeObjArray = CODES_DATA_OBJ.codesTypeObjArray;
   var objArrFft = [];
-
   var codesArr = assessmentFft.split(",");
   if (codesArr.length > 0) {
     for (var i = 0; i < codesArr.length; i++) {
@@ -1429,7 +1509,9 @@ Zachys.Stock.getNoteObjectData = function (assessmentFft, quantity, auctionDispl
               quantity: parseInt(quantity),
               auctionDisplayName: auctionDisplayName,
               size: size,
-              itemId: itemId
+              itemId: itemId,
+              aucplatelineiteminternalid: aucplatelineiteminternalid,
+              vintage: vintage ? parseInt(vintage) : 0
             })
           }
 
@@ -1448,11 +1530,12 @@ Zachys.Stock.calculateSumOfSameCode = function (objArrCodes, isMixedLps) {
   var output = objArrCodes.reduce((accumulator, cur) => {
     let codeText = cur.codeText;
     let itemId = cur.itemId;
-    let found = isMixedLps ? accumulator.find(elem => (elem.codeText === codeText && elem.itemId == itemId)) : accumulator.find(elem => elem.codeText === codeText)
+    let found = isMixedLps ? accumulator.find(elem => ((elem.codeText === codeText && elem.itemId == itemId))) : accumulator.find(elem => elem.codeText === codeText)
+    
     if (found) {
       found.codeQty += parseInt(cur.codeQty);
       if (cur.quantity) {
-        found.quantity += parseInt(cur.quantity);
+        found.quantity += !isMixedLps ? parseInt(cur.quantity) : accumulator[accumulator.length - 1].aucplatelineiteminternalid != cur.aucplatelineiteminternalid ? parseInt(cur.quantity) : 0;
       }
     } else {
       accumulator.push(cur);
@@ -1462,10 +1545,18 @@ Zachys.Stock.calculateSumOfSameCode = function (objArrCodes, isMixedLps) {
   return output;
 }
 
-Zachys.Stock.sortList = function (list, isMixedLps) {
-  var sortOrder = ['packType', 'orderingType'];
-  if (isMixedLps) {
-    sortOrder.splice(0, 0, 'itemId');
+Zachys.Stock.sortList = function (list, isMixedLps, type) {
+
+  var sortOrder
+  if (type == 'byvintage') {
+    sortOrder = ['vintage', 'auctionDisplayName'];
+
+  } else {
+    sortOrder = ['packType', 'orderingType'];
+    if (isMixedLps) {
+      sortOrder.splice(0, 0, 'itemId');
+      sortOrder.splice(0, 0, 'vintage');
+    }
   }
   list.sort(fieldSorter(sortOrder));
 

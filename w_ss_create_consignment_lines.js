@@ -71,6 +71,30 @@ define(['N/record', 'N/ui/message', 'N/search'],
                             join: "custrecord_applines_appraisal"
                         }),
                         search.createColumn({
+                            name: "custrecord_applines_prelot_number",
+                            join: "custrecord_applines_appraisal"
+                        }),
+                        search.createColumn({
+                            name: "custrecord_applines_intended_sale",
+                            join: "custrecord_applines_appraisal"
+                        }),
+                        search.createColumn({
+                            name: "custrecord_applines_size",
+                            join: "custrecord_applines_appraisal"
+                        }),
+                        search.createColumn({
+                            name: "custrecord_applines_vintage",
+                            join: "custrecord_applines_appraisal"
+                        }),
+                        search.createColumn({
+                            name: "custrecord_applines_country",
+                            join: "custrecord_applines_appraisal"
+                        }),
+                        search.createColumn({
+                            name: "custrecord_applines_region",
+                            join: "custrecord_applines_appraisal"
+                        }),
+                        search.createColumn({
                             name: "custrecord_applines_closed",
                             join: "custrecord_applines_appraisal"
                         }),
@@ -140,6 +164,30 @@ define(['N/record', 'N/ui/message', 'N/search'],
                             name: 'custrecord_applines_quantity',
                             join: "custrecord_applines_appraisal"
                         });
+                        var appPreLot = appLineSearchData.getValue({
+                            name: 'custrecord_applines_prelot_number',
+                            join: "custrecord_applines_appraisal"
+                        });
+                        var appIntendedSale = appLineSearchData.getValue({
+                            name: 'custrecord_applines_intended_sale',
+                            join: "custrecord_applines_appraisal"
+                        });
+                        var appSize = appLineSearchData.getValue({
+                            name: 'custrecord_applines_size',
+                            join: "custrecord_applines_appraisal"
+                        });
+                        var appVintage = appLineSearchData.getValue({
+                            name: 'custrecord_applines_vintage',
+                            join: "custrecord_applines_appraisal"
+                        });
+                        var appCountry = appLineSearchData.getValue({
+                            name:"custrecord_applines_country",
+                            join: "custrecord_applines_appraisal"
+                        });
+                        var appRegion = appLineSearchData.getValue({
+                            name:"custrecord_applines_region",
+                            join: "custrecord_applines_appraisal"
+                        });
                         var appClosed = appLineSearchData.getValue({
                             name: 'custrecord_applines_closed',
                             join: "custrecord_applines_appraisal"
@@ -168,6 +216,12 @@ define(['N/record', 'N/ui/message', 'N/search'],
                         obj.appExtLow = appExtLow ? appExtLow : 0;
                         obj.appExtHigh = appExtHigh ? appExtHigh : 0;
                         obj.appQuantity = appQuantity ? appQuantity : 0;
+                        obj.appPreLot = appPreLot ? appPreLot : 0;
+                        obj.appIntendedSale = appIntendedSale ? appIntendedSale : '';
+                        obj.appSize = appSize ? appSize : 0;
+                        obj.appVintage = appVintage ? appVintage : 0;
+                        obj.appCountry = appCountry ? appCountry : '';
+                        obj.appRegion = appRegion ? appRegion : '';
                         obj.appClosed = appClosed ? appClosed : '';
                         obj.appConsignorLocation = appConsignorLocation ? appConsignorLocation : '';
                         obj.appScreener = appScreener ? appScreener : 0;
@@ -197,6 +251,10 @@ define(['N/record', 'N/ui/message', 'N/search'],
                         ["isinactive", "is", "F"],
                         "AND",
                         ["custrecord_lines_created", "is", "F"]
+                        // ,
+                        // "AND",
+                        // ["internalid", "anyof", 30056],
+                        
                     ],
                     columns: [
                         search.createColumn({
@@ -393,7 +451,54 @@ define(['N/record', 'N/ui/message', 'N/search'],
                         ignoreFieldChange: true
                     });
                 }
-
+                if (lineObj.appPreLot) {
+                    consignmentRec.setCurrentSublistValue({
+                        sublistId: 'recmachcustrecord_cl_consignment',
+                        fieldId: 'custrecord_cl_prelot_number',
+                        value: lineObj.appPreLot,
+                        ignoreFieldChange: true
+                    });
+                }
+                if (lineObj.appIntendedSale) {
+                    consignmentRec.setCurrentSublistValue({
+                        sublistId: 'recmachcustrecord_cl_consignment',
+                        fieldId: 'custrecord_cl_intended_sale',
+                        value: lineObj.appIntendedSale,
+                        ignoreFieldChange: true
+                    });
+                }
+                if (lineObj.appSize) {
+                    consignmentRec.setCurrentSublistValue({
+                        sublistId: 'recmachcustrecord_cl_consignment',
+                        fieldId: 'custrecord_cl_size',
+                        value: lineObj.appSize,
+                        ignoreFieldChange: true
+                    });
+                }
+                if (lineObj.appVintage) {
+                    consignmentRec.setCurrentSublistText({
+                        sublistId: 'recmachcustrecord_cl_consignment',
+                        fieldId: 'custrecord_cl_vintage',
+                        text: lineObj.appVintage,
+                        ignoreFieldChange: true
+                    });
+                }
+                if (lineObj.appCountry) {
+                    consignmentRec.setCurrentSublistText({
+                        sublistId: 'recmachcustrecord_cl_consignment',
+                        fieldId: 'custrecord_cl_country',
+                        text: lineObj.appCountry,
+                        ignoreFieldChange: true
+                    });
+                }
+                if (lineObj.appRegion) {
+                    consignmentRec.setCurrentSublistText({
+                        sublistId: 'recmachcustrecord_cl_consignment',
+                        fieldId: 'custrecord_cl_region',
+                        text: lineObj.appRegion,
+                        ignoreFieldChange: true
+                    });
+                }
                 consignmentRec.commitLine({
                     sublistId: 'recmachcustrecord_cl_consignment'
                 });

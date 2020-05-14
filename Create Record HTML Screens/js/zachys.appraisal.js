@@ -36,7 +36,7 @@ Zachys.Stock = function(){
   html += '    <b class="settings-button" ref="table-container.settings">' + SVG.Cog + '</b>';
   html += '    <div class="filterHolder" ref="filterAppraisalHolder"></div>'
   html += '  </div>';
-  html += '  <div class="table-container" var="table-lines"></div>';
+  html += '  <div class="table-container" id="table-container-lines" var="table-lines"></div>';
   html += '  <div class="headers" var="headers">';
   html += '    <span class="item-size" ref="sort.lp">Size<i>&nbsp;' + SVG.ArrowUp + '</i></span>';
   html += '    <span class="item-vintage">Vintage</span>';
@@ -110,6 +110,12 @@ Zachys.Stock = function(){
                 self.setState({ saveEnabled: true });
                 self.UI.filterAppraisal.reset();
                 self.UI.tableLines.reset();
+                if(!self.UI.tableLines.UI.last.classList.contains('disabled')){
+                  console.log("clicked....")
+                  self.UI.tableLines.UI.last.click()
+
+                }
+                console.log("self.UI.tableLines.UI.last:", self.UI.tableLines)
   
               
             });
@@ -613,7 +619,7 @@ Zachys.Stock = function(){
         name: 'Vintage',
         width: 70,
         render: 'vintage',
-        sort: 'vintage',
+        sort: 'vintageId',
         filter: 'vintage',
         id: 'vintage',
       },
