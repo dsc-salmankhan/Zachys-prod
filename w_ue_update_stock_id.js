@@ -74,7 +74,7 @@
                           log.debug("vintageId : vintage", vintageId + ' : ' + vintage);
                           log.debug("quantity", quantity);
 
-                          if ((vintage && vintageId != VINTAGE_MIXED && !vintageBand) || (oldVintageId != vintageId)) {
+                          if ((vintageId && vintageId != VINTAGE_MIXED && !vintageBand) || (oldVintageId != vintageId)) {
                               log.debug("if 1", "yes got true")
                               var vintageBandSearchObj = search.create({
                                   type: "customrecord_vintage_band",
@@ -113,12 +113,14 @@
 
                               }
                           } else {
-                              log.debug("else 1", "yes got true")
+                              log.debug("else 1", "yes got true");
+                            if (!vintageBand) {
                               stockRec.setValue({
                                   fieldId: "custrecord_stockid_vintage_band",
                                   value: VINTAGE_BAND_MIXED,
                                   ignoreFieldChange: true
                               });
+                            }
                           }
 
 

@@ -597,7 +597,7 @@ Zachys.Stock.LicensePlate = function (data) {
   this.holder = Ozine.DOM(html, this.UI, true);
   this.data = data;
 
-  this.UI.lot.innerHTML = data.lot;
+  this.UI.lot.innerHTML = parseInt(data.lot) != 0 ? data.lot : "";
   this.UI.id.innerHTML = data.id;
   this.UI.consignor.innerHTML = data.consignor;
   this.UI.consignmentid.innerHTML = data.consignmentid;
@@ -867,10 +867,13 @@ Zachys.Stock.getMixedCreationData = function (stockIdsData) {
   var assessmentFfts = [];
   var packTypeId = '';
   var country, itemclass, producer, sizeid, sizeDescriptionid, region, apellation, varietal, vintageid, itemid;
+  var intendedsaleValue, lotNumValue;
   var isNotMixedData = false;
 
   var QUANTITY_SUM = 0;
   for (var i = 0; i < stockIdsData.length; i++) {
+    intendedsaleValue = stockIdsData[i].intendedsale;
+    lotNumValue = stockIdsData[i].lotnumber
     tempAucplateinternalid.push(stockIdsData[i].aucplateinternalid);
     if (stockIdsData[i].linesdata) {
       for (var j = 0; j < stockIdsData[i].linesdata.length; j++) {
@@ -969,6 +972,8 @@ Zachys.Stock.getMixedCreationData = function (stockIdsData) {
   var assessmentNote = assessmentCode.concat(assessmentFft);
   Zachys.Stock.sortList(assessmentNote, true);
 
+  tempObjInfo.lotnumber = lotNumValue;
+  tempObjInfo.intendedsale = intendedsaleValue;
   tempObjInfo.country = country;
   tempObjInfo.itemclass = itemclass;
   tempObjInfo.producer = producer;
@@ -1019,8 +1024,13 @@ Zachys.Stock.getStockidsData = function () {
     obj.estimatehightotal = '';
 
     if (obj.aucplateinternalid) {
+      var tempLotNumber = document.getElementById("auc-plate-lines-lot-" + i) ? document.getElementById("auc-plate-lines-lot-" + i).innerHTML : '';
+      if (obj.lotnumber) {
+        obj.lotnumber = parseFloat(tempLotNumber < obj.lotnumber) ? tempLotNumber : obj.lotnumber;
 
-      obj.lotnumber = document.getElementById("auc-plate-lines-lot-" + i) ? document.getElementById("auc-plate-lines-lot-" + i).innerHTML : '';
+      } else {
+        obj.lotnumber = tempLotNumber;
+      }
       obj.licenseplate = document.getElementById("auc-plate-lines-id-" + i) ? document.getElementById("auc-plate-lines-id-" + i).innerHTML : '';
       obj.consignor = document.getElementById("auc-plate-lines-consignor-" + i) ? document.getElementById("auc-plate-lines-consignor-" + i).innerHTML : '';
       obj.consignmentid = document.getElementById("auc-plate-lines-consignmentid-" + i) ? document.getElementById("auc-plate-lines-consignmentid-" + i).innerHTML : '';
@@ -1123,6 +1133,8 @@ Zachys.Stock.getStockidsData = function () {
 
           if (!obj.intendedsale && intendedsale) {
             obj.intendedsale = intendedsale;
+          } else if (intendedsale) {
+            obj.intendedsale = parseInt(intendedsale < obj.intendedsale) ? intendedsale : obj.intendedsale;
           }
 
           if (!obj.lpPhoto && lpPhoto) {
@@ -1191,7 +1203,7 @@ Zachys.Stock.getStockidsData = function () {
 }
 
 Zachys.Stock.createOrUpdateRecord = function (stockCreationData, nextAction, isEachLine, isContainCombination) {
-  console.log(stockCreationData)
+  
   // return;
   Zachys.Stock.startLoader();
   var objData = {};
@@ -1531,7 +1543,7 @@ Zachys.Stock.calculateSumOfSameCode = function (objArrCodes, isMixedLps) {
     let codeText = cur.codeText;
     let itemId = cur.itemId;
     let found = isMixedLps ? accumulator.find(elem => ((elem.codeText === codeText && elem.itemId == itemId))) : accumulator.find(elem => elem.codeText === codeText)
-    
+
     if (found) {
       found.codeQty += parseInt(cur.codeQty);
       if (cur.quantity) {

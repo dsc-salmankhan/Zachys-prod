@@ -35,7 +35,9 @@ define(['N/record', 'N/file', 'N/search', 'N/url', 'SuiteScripts/library-files/b
                     }
 
                     var auctionPlatesLinesArr = getConsignmentLinesData(consignmentId);
+                    sortDataDescendingOrder(auctionPlatesLinesArr);
                     log.debug("auctionPlatesLinesArr:", JSON.stringify(auctionPlatesLinesArr))
+                    log.debug("auctionPlatesLinesArr.length:", auctionPlatesLinesArr.length)
                     var codesData = getCodesData();
                     var suiteletUrl = getScriptUrl();
 
@@ -211,7 +213,18 @@ define(['N/record', 'N/file', 'N/search', 'N/url', 'SuiteScripts/library-files/b
                 ]
             });
 
-            var searchDataLine = auctionPlateItemsSearchObj.run().getRange(0, 1000);
+            var searchDataLine = []; //auctionPlateItemsSearchObj.run().getRange(0, 1000);
+            var count = 0;
+            var pageSize = 1000;
+            var start = 0;
+            do {
+                var searchObjArr = auctionPlateItemsSearchObj.run().getRange(start, start + pageSize);
+
+                searchDataLine = searchDataLine.concat(searchObjArr);
+                count = searchObjArr.length;
+                start += pageSize;
+            } while (count == pageSize);
+
             if (searchDataLine.length > 0) {
                 var body = {};
                 var isSamePreLotNum = true;
@@ -241,14 +254,13 @@ define(['N/record', 'N/file', 'N/search', 'N/url', 'SuiteScripts/library-files/b
                     } else if (body.internalid != lpInternalId) {
 
                         if (isSamePreLotNum) {
-                            body.lot = previousPreLotNum;
+                            body.lot = previousPreLotNum ? parseFloat(previousPreLotNum) : 0.0;
                             previousPreLotNum = '';
                         } else {
-                            body.lot = '';
+                            body.lot = 0.0;
                             isSamePreLotNum = true;
                             previousPreLotNum = '';
                         }
-                        log.debug("body:", JSON.stringify(body))
                         auctionPlatesLinesArr.push(body);
                         var body = {};
                         body.internalid = lpInternalId ? lpInternalId : '';
@@ -436,10 +448,10 @@ define(['N/record', 'N/file', 'N/search', 'N/url', 'SuiteScripts/library-files/b
 
                     if (searchDataLine.length == j + 1) {
                         if (isSamePreLotNum) {
-                            body.lot = previousPreLotNum;
+                            body.lot = previousPreLotNum ? parseFloat(previousPreLotNum) : 0.0;
                             previousPreLotNum = '';
                         } else {
-                            body.lot = '';
+                            body.lot = 0.0;
                             isSamePreLotNum = true;
                             previousPreLotNum = '';
                         }
@@ -983,6 +995,22 @@ define(['N/record', 'N/file', 'N/search', 'N/url', 'SuiteScripts/library-files/b
                     });
                 }
 
+                if (data.lotnumber) {
+                    stockIdRec.setValue({
+                        fieldId: "custrecord_stockid_prelot_number",
+                        value: data.lotnumber,
+                        ignoreFieldChange: true
+                    });
+                }
+
+                if (data.intendedsale) {
+                    stockIdRec.setValue({
+                        fieldId: "custrecord_stockid_intended_sale",
+                        value: data.intendedsale,
+                        ignoreFieldChange: true
+                    });
+                }
+
                 if (data.mixLotDeatils) {
                     stockIdRec.setValue({
                         fieldId: "custrecord_stockid_mix_lot_details",
@@ -1296,7 +1324,18 @@ define(['N/record', 'N/file', 'N/search', 'N/url', 'SuiteScripts/library-files/b
 
                 ]
             });
-            var searchData = searchObj.run().getRange(0, 1000);
+            var searchData = []; //searchObj.run().getRange(0, 1000);
+            var count = 0;
+            var pageSize = 1000;
+            var start = 0;
+            do {
+                var searchObjArr = searchObj.run().getRange(start, start + pageSize);
+
+                searchData = searchData.concat(searchObjArr);
+                count = searchObjArr.length;
+                start += pageSize;
+            } while (count == pageSize);
+
             if (searchData) {
                 for (var i = 0; i < searchData.length; i++) {
                     var obj = {};
@@ -1481,6 +1520,27 @@ define(['N/record', 'N/file', 'N/search', 'N/url', 'SuiteScripts/library-files/b
             }
 
             return codesTypejArr;
+        }
+
+        function sortDataDescendingOrder(dataArr) {
+            dataArr.sort(fieldSorter(['lot']));
+
+            function fieldSorter(fields) {
+                return function (a, b) {
+                    return fields.map(function (o) {
+                        var dir = 1;
+                        if (o[0] === '-') {
+                            dir = -1;
+                            o = o.substring(1);
+                        }
+                        if (a[o] < b[o]) return dir;
+                        if (a[o] > b[o]) return -(dir);
+                        return 0;
+                    }).reduce(function firstNonZeroValue(p, n) {
+                        return p ? p : n;
+                    }, 0);
+                };
+            }
         }
 
 

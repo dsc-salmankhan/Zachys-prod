@@ -9,7 +9,7 @@ var UNASSIGNED_STATUS = 1; //Unassigned
 define(['N/record', 'N/file', 'N/search', 'N/url'],
     function (record, file, search, url) {
         function onRequest(context) {
-            var title = "onRequest";
+            var title = "onRequest() :: ";
             try {
                 if (context.request.method === 'GET') {
                     log.debug("onRequest:", "onRequest() GET gethod start");
@@ -160,7 +160,17 @@ define(['N/record', 'N/file', 'N/search', 'N/url'],
             });
 
 
-            var searchData = stockIdSearchObj.run().getRange(0, 1000);
+            var searchData = []; //stockIdSearchObj.run().getRange(0, 1000);
+            var count = 0;
+            var pageSize = 1000;
+            var start = 0;
+            do {
+                var searchObjArr = stockIdSearchObj.run().getRange(start, start + pageSize);
+
+                searchData = searchData.concat(searchObjArr);
+                count = searchObjArr.length;
+                start += pageSize;
+            } while (count == pageSize);
 
             if (searchData) {
                 for (var i = 0; i < searchData.length; i++) {
@@ -365,7 +375,17 @@ define(['N/record', 'N/file', 'N/search', 'N/url'],
                 ]
             });
 
-            var searchDataLine = auctionPlateItemsSearchObj.run().getRange(0, 1000);
+            var searchDataLine = [];  //auctionPlateItemsSearchObj.run().getRange(0, 1000);
+            var count = 0;
+            var pageSize = 1000;
+            var start = 0;
+            do {
+                var searchObjArr = auctionPlateItemsSearchObj.run().getRange(start, start + pageSize);
+
+                searchDataLine = searchDataLine.concat(searchObjArr);
+                count = searchObjArr.length;
+                start += pageSize;
+            } while (count == pageSize);
 
             if (searchDataLine.length > 0) {
                 var wines = [];
@@ -465,7 +485,17 @@ define(['N/record', 'N/file', 'N/search', 'N/url'],
                 ]
             });
 
-            var searchData = auctionsSearchObj.run().getRange(0, 1000);
+            var searchData = []; //auctionsSearchObj.run().getRange(0, 1000);
+            var count = 0;
+            var pageSize = 1000;
+            var start = 0;
+            do {
+                var searchObjArr = auctionsSearchObj.run().getRange(start, start + pageSize);
+
+                searchData = searchData.concat(searchObjArr);
+                count = searchObjArr.length;
+                start += pageSize;
+            } while (count == pageSize);
 
             if (searchData) {
                 for (var i = 0; i < searchData.length; i++) {
@@ -501,7 +531,7 @@ define(['N/record', 'N/file', 'N/search', 'N/url'],
                         ignoreFieldChange: true
                     });
                     aucLotRec.setValue({
-                        fieldId: "custrecord_auction_lot_lotnumber",
+                        fieldId: "custrecord_auction_lot_pre_lot",
                         value: data.stocklotnumber,
                         ignoreFieldChange: true
                     });
